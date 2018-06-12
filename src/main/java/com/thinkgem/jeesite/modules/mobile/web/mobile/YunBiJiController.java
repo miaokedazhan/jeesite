@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +39,6 @@ public class YunBiJiController extends BaseController {
     private SysTokenService sysTokenService;
     @Autowired
     private SysCodeService sysCodeService;
-
     @Autowired
     private ValidateUtils validateUtils;
 
@@ -143,6 +140,7 @@ public class YunBiJiController extends BaseController {
 
     /*
      * 登录退出
+     * 增加一个空行
      *
      */
     @ResponseBody
