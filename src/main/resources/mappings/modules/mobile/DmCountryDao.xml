@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.mobile.dao.DmCountryDao">
+    
+	<sql id="dmCountryColumns">
+		a.chinese AS "chinese",
+		a.english AS "english",
+		a.japanese AS "japanese",
+		a.mobile_prefix AS "mobilePrefix"
+	</sql>
+	
+	<sql id="dmCountryJoins">
+	</sql>
+    
+	<select id="get" resultType="DmCountry">
+		SELECT 
+			<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DmCountry">
+		SELECT 
+			<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		<where>
+			1=1
+			<if test="area != null and area != ''">
+				AND a.area LIKE
+				<if test="dbName == 'oracle'">'%'||#{area}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{area}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{area},'%')</if>
+			</if>
+			<if test="mobilePrefix != null and mobilePrefix != ''">
+				AND a.mobile_prefix LIKE
+				<if test="dbName == 'oracle'">'%'||#{mobilePrefix}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{mobilePrefix}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{mobilePrefix},'%')</if>
+			</if>
+			<if test="initial != null and initial != ''">
+				AND a.initial LIKE
+				<if test="dbName == 'oracle'">'%'||#{initial}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{initial}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{initial},'%')</if>
+			</if>
+		</where>
+		order by a.initial
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DmCountry">
+		SELECT 
+			<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		<where>
+
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO dm_country(
+			chinese,
+			english,
+			japanese,
+			mobile_prefix,
+			initial
+		) VALUES (
+			#{chinese},
+			#{english},
+			#{japanese},
+			#{mobilePrefix},
+			#{initial}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE dm_country SET 	
+			country = #{country},
+			mobile_prefix = #{mobilePrefix},
+			area = #{area},
+			initial=#{initial}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM dm_country
+		WHERE id = #{id}
+	</update>
+
+	<select id="findListJapanese" resultType="DmCountry">
+		SELECT
+		<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		<where>
+			1=1
+			<if test="area != null and area != ''">
+				AND a.area LIKE
+				<if test="dbName == 'oracle'">'%'||#{area}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{area}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{area},'%')</if>
+			</if>
+			<if test="mobilePrefix != null and mobilePrefix != ''">
+				AND a.mobile_prefix LIKE
+				<if test="dbName == 'oracle'">'%'||#{mobilePrefix}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{mobilePrefix}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{mobilePrefix},'%')</if>
+			</if>
+			<if test="initial != null and initial != ''">
+				AND a.initial LIKE
+				<if test="dbName == 'oracle'">'%'||#{initial}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{initial}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{initial},'%')</if>
+			</if>
+		</where>
+		order by a.initial
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListEnglish" resultType="DmCountry">
+		SELECT
+		<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		<where>
+			1=1
+			<if test="area != null and area != ''">
+				AND a.area LIKE
+				<if test="dbName == 'oracle'">'%'||#{area}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{area}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{area},'%')</if>
+			</if>
+			<if test="mobilePrefix != null and mobilePrefix != ''">
+				AND a.mobile_prefix LIKE
+				<if test="dbName == 'oracle'">'%'||#{mobilePrefix}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{mobilePrefix}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{mobilePrefix},'%')</if>
+			</if>
+			<if test="initial != null and initial != ''">
+				AND a.initial LIKE
+				<if test="dbName == 'oracle'">'%'||#{initial}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{initial}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{initial},'%')</if>
+			</if>
+		</where>
+		order by a.english
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListChinese" resultType="DmCountry">
+		SELECT
+		<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		<include refid="dmCountryJoins"/>
+		<where>
+			1=1
+			<if test="area != null and area != ''">
+				AND a.area LIKE
+				<if test="dbName == 'oracle'">'%'||#{area}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{area}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{area},'%')</if>
+			</if>
+			<if test="mobilePrefix != null and mobilePrefix != ''">
+				AND a.mobile_prefix LIKE
+				<if test="dbName == 'oracle'">'%'||#{mobilePrefix}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{mobilePrefix}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{mobilePrefix},'%')</if>
+			</if>
+			<if test="initial != null and initial != ''">
+				AND a.initial LIKE
+				<if test="dbName == 'oracle'">'%'||#{initial}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{initial}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{initial},'%')</if>
+			</if>
+		</where>
+		order by a.initial
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findChineseByZIMU" resultType="DmCountry">
+		SELECT
+		<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		WHERE a.initial=#{str}
+		order by a.initial
+	</select>
+	<select id="finEnglishByZIMU" resultType="DmCountry">
+		SELECT
+		<include refid="dmCountryColumns"/>
+		FROM dm_country a
+		WHERE a.english like concat(#{str},'%')
+		order by a.english
+	</select>
+
+	
+</mapper>

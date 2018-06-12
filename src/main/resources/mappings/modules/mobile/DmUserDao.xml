@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.mobile.dao.DmUserDao">
+
+<!--	<resultMap id="dmUser" type="com.thinkgem.jeesite.modules.mobile.entity.DmUser">
+		<id property="id" column="id" />  &lt;!&ndash; id相当于resultmap的引用的唯一标识&ndash;&gt;
+		<result property="nickname" column="nickname" />  &lt;!&ndash; property对应javabean的属性名，column对应数据库字段名 &ndash;&gt;
+		<result property="phoneNumber" column="phone_number" />
+		<result property="password" column="password" />
+		<result property="headPortrait" column="head_portrait"  jdbcType="BLOB" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
+	</resultMap>-->
+	<sql id="dmUserColumns">
+		a.id AS "id",
+		a.nickname AS "nickname",
+		a.phone_number AS "phoneNumber",
+		a.password AS "password",
+		a.head_portrait AS "headPortrait",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="dmUserJoins">
+	</sql>
+    
+	<select id="get" resultType="DmUser">
+		SELECT 
+			<include refid="dmUserColumns"/>
+		FROM dm_user a
+		<include refid="dmUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getUserByPhoneNumber" resultType="DmUser">
+		SELECT
+		<include refid="dmUserColumns"/>
+		FROM dm_user a
+		<include refid="dmUserJoins"/>
+		WHERE a.phone_number = #{phoneNumber}
+	</select>
+	
+	<select id="findList" resultType="DmUser">
+		SELECT 
+			<include refid="dmUserColumns"/>
+		FROM dm_user a
+		<include refid="dmUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="nickname != null and nickname != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{nickname}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{nickname}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{nickname},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DmUser">
+		SELECT 
+			<include refid="dmUserColumns"/>
+		FROM dm_user a
+		<include refid="dmUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO dm_user(
+		    id,
+			nickname,
+			phone_number,
+			head_portrait,
+			password,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+		    #{id},
+			#{nickname},
+			#{phoneNumber},
+			#{headPortrait},
+			#{password},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE dm_user SET
+		    nickname = #{nickname},
+			password = #{password},
+			head_portrait = #{headPortrait}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE dm_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

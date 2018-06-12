@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.mobile.dao.SysTokenDao">
+    
+	<sql id="sysTokenColumns">
+		a.token AS "token",
+		a.dmuser_id AS "dmuserId",
+		a.export_time AS "exportTime"
+	</sql>
+	
+	<sql id="sysTokenJoins">
+	</sql>
+    
+	<select id="get" resultType="SysToken">
+		SELECT 
+			<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		WHERE a.token = #{token}
+	</select>
+
+	<select id="getSysTokenByToken" resultType="SysToken">
+		SELECT
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		WHERE a.token = #{token}
+	</select>
+
+	<select id="getSysTokenByUserId" resultType="SysToken">
+		SELECT
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		WHERE a.dmuser_id = #{dmuserId}
+		order by a.export_time desc
+	</select>
+
+	<update id="deleteSysTokenByToken">
+		DELETE FROM sys_token
+		WHERE token = #{token}
+	</update>
+
+	<update id="deleteSysTokenByUserId">
+		DELETE FROM sys_token
+		WHERE dmuser_id = #{dmuserId}
+	</update>
+
+	<update id="updateSysTokenByToken">
+		UPDATE sys_token SET
+			token = #{token},
+			dmuser_id = #{dmuserId},
+			export_time = #{exportTime}
+		WHERE token = #{token}
+	</update>
+	
+	<select id="findList" resultType="SysToken">
+		SELECT 
+			<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysToken">
+		SELECT 
+			<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_token(
+			token,
+			dmuser_id,
+			export_time
+		) VALUES (
+			#{token},
+			#{dmuserId},
+			#{exportTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_token SET 	
+			token = #{token},
+			dmuser_id = #{dmuserId},
+			export_time = #{exportTime}
+		WHERE token = #{token}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_token
+		WHERE token = #{token}
+	</update>
+	
+</mapper>
