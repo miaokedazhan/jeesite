@@ -1,26 +1,23 @@
 package com.thinkgem.jeesite.modules.mobile.Test;
 
 
+import com.thinkgem.jeesite.common.utils.JedisUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
-import com.thinkgem.jeesite.modules.mobile.service.*;
+import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -35,6 +32,22 @@ public class MobileTest extends BaseController {
 
     @Autowired
     private DmCountryService dmCountryService;
+
+    /**
+     * 测试redis
+     */
+    @RequestMapping("testRedis")
+    @ResponseBody
+    public MobileResult testRedis() {
+        DmUser dmUser = new DmUser();
+        dmUser.setPassword("122121212");
+        dmUser.setHeadPortrait("12133");
+        dmUser.setHeadPortrait("1123");
+        JedisUtils.delObject("key");
+        JedisUtils.setObject("key", dmUser, 10000);
+        DmUser dmUser2 = (DmUser) JedisUtils.getObject("key1");
+        return MobileResult.ok(",", dmUser2);
+    }
     
     /**
      * 开发环境添加区号

@@ -1,27 +1,16 @@
 package com.thinkgem.jeesite.modules.mobile.Test;
 
 
-
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.ParseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.thinkgem.jeesite.common.utils.JedisUtils;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.CharsetUtils;
-import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  *接口测试
@@ -178,6 +167,13 @@ public class MobileTest2  {
         }
     }
 
+    /**
+     * 测试redis
+     */
+    @Test
+    public void testRedis() {
+        JedisUtils.setObject("key", "222", 10000);
+    }
 
 
 
