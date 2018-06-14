@@ -3,7 +3,6 @@ package com.thinkgem.jeesite.modules.mobile.service;
 import com.thinkgem.jeesite.common.security.Digests;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
-import com.thinkgem.jeesite.modules.mobile.entity.SysCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,6 @@ public class ValidateUtils {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysCodeService sysCodeService;
 
     public static final int HASH_INTERATIONS = 1024;
     public static final int SALT_SIZE = 8;
@@ -66,15 +63,4 @@ public class ValidateUtils {
         Date data = new Date();
         return data.getTime() < time;
     }
-
-    /**
-     * 是否已发送验证码
-     *
-     * @param mobile 手机号
-     */
-    public boolean validateSendCode(String mobile) {
-        SysCode sysCode = sysCodeService.getSysCodeByPhone(mobile);
-        return sysCode != null;
-    }
-
 }

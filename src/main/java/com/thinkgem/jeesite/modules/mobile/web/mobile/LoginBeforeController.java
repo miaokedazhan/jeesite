@@ -7,10 +7,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
-import com.thinkgem.jeesite.modules.mobile.entity.SysCode;
 import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
-import com.thinkgem.jeesite.modules.mobile.service.SysCodeService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.ALiYun;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
@@ -38,8 +36,6 @@ public class LoginBeforeController extends BaseController {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysCodeService sysCodeService;
     @Autowired
     private ValidateUtils validateUtils;
     @Autowired
@@ -83,12 +79,7 @@ public class LoginBeforeController extends BaseController {
                 status = ALiYun.sendSSM("00"+areaCode+mobile, MobileUtils.signNameSIGN_NAME, MobileUtils.TEMPLATE_CODE_INTERNATIONAL, code);
             }
             if(status.equals("OK")){
-                SysCode sysCode = new SysCode();
-                sysCode.setPhone(areaCode+mobile);
-                sysCode.setCode(code);
-                sysCode.setExportTime(getCodeExportTime());
-                sysCodeService.delete(sysCode);
-                sysCodeService.save(sysCode);
+                JedisUtils.set(areaCode + mobile, code, MobileUtils.REDIS_CODE_Export_TIME);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("code", code);
                 return MobileResult.ok(MobileUtils.STATUS_1009, map);
@@ -127,14 +118,11 @@ public class LoginBeforeController extends BaseController {
                     if (!validateUtils.validateMobile(areaCode+mobile)) {
                         return MobileResult.error(1002, MobileUtils.STATUS_1002);
                     }
-                    if (!validateUtils.validateSendCode(areaCode+mobile)) {
-                        return MobileResult.error(1021, MobileUtils.STATUS_1021);
+                    String redisCode = JedisUtils.get(areaCode + mobile);
+                    if (StringUtils.isEmpty(redisCode)) {
+                        return MobileResult.error(1040, MobileUtils.STATUS_1040);
                     }
-                    SysCode sysCode = sysCodeService.getSysCodeByPhone(areaCode+mobile);
-                    if (!validateUtils.validateCodeExportTime(sysCode.getExportTime().getTime())) {
-                        return MobileResult.error(1016, MobileUtils.STATUS_1016);
-                    }
-                    if (!sysCode.getCode().equals(code)) {
+                    if (!redisCode.equals(code)) {
                         return MobileResult.error(1008, MobileUtils.STATUS_1008);
                     }
                     DmUser dmUser = new DmUser();
@@ -147,27 +135,24 @@ public class LoginBeforeController extends BaseController {
                     dmUser.setPhoneNumber(areaCode+mobile);
                     dmUser.setIsNewRecord(true);
                     dmUserService.save(dmUser);
-                    sysCodeService.delete(sysCode);
+                    JedisUtils.del(areaCode + mobile);
                     return MobileResult.ok(MobileUtils.STATUS_1003, "");
                 case "2":
                     if (validateUtils.validateMobile(areaCode+mobile)) {
                         return MobileResult.error(1004, MobileUtils.STATUS_1004);
                     }
-                    if (!validateUtils.validateSendCode(areaCode+mobile)) {
-                        return MobileResult.error(1021, MobileUtils.STATUS_1021);
+                    String redisCode2 = JedisUtils.get(areaCode + mobile);
+                    if (StringUtils.isEmpty(redisCode2)) {
+                        return MobileResult.error(1040, MobileUtils.STATUS_1040);
                     }
-                    SysCode sysCode2 = sysCodeService.getSysCodeByPhone(areaCode+mobile);
-                    if (!validateUtils.validateCodeExportTime(sysCode2.getExportTime().getTime())) {
-                        return MobileResult.error(1016, MobileUtils.STATUS_1016);
-                    }
-                    if (!sysCode2.getCode().equals(code)) {
+                    if (!redisCode2.equals(code)) {
                         return MobileResult.error(1008, MobileUtils.STATUS_1008);
                     }
                     DmUser dmUser3 = dmUserService.getUserByPhoneNumber(areaCode+mobile);
                     dmUser3.setPassword(SystemService.entryptPassword(password));
                     dmUserService.save(dmUser3);
                     JedisUtils.delObject(dmUser3.getToken());
-                    sysCodeService.delete(sysCode2);
+                    JedisUtils.del(areaCode + mobile);
                     return MobileResult.ok(MobileUtils.STATUS_1015, "");
             }
             return MobileResult.error(1023, MobileUtils.STATUS_1023);

@@ -21,14 +21,15 @@ public class MobileUtils {
     * 单位：天
     * */
     public static  final int Export_TIME=7;
- public static final int Redis_Export_TIME = 1 * 60 * 60 * 24 * 7;
- //public static  final int Redis_Export_TIME=60;
+   public static final int Redis_Export_TIME = 1 * 60 * 60 * 24 * 7;
+   //public static  final int Redis_Export_TIME=60;
 
     /*
      * token过期时间
      * 单位：分钟
      * */
     public static  final int CODE_Export_TIME=5;
+   public static final int REDIS_CODE_Export_TIME = 1 * 60 * 5;
     /**
      * 请求状态码
      */
@@ -68,4 +69,5 @@ public class MobileUtils {
     public static  final String STATUS_1034="上传头像文件错误！";
     public static  final String STATUS_1035="获取头像成功！";
     public static  final String STATUS_1036="还没有头像，请上传！";
+   public static final String STATUS_1040 = "请获取验证码！";
 }

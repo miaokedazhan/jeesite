@@ -7,7 +7,6 @@ import com.thinkgem.jeesite.common.utils.UploadUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
-import com.thinkgem.jeesite.modules.mobile.service.SysCodeService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
@@ -35,8 +34,6 @@ public class YunBiJiController extends BaseController {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysCodeService sysCodeService;
     @Autowired
     private ValidateUtils validateUtils;
 
