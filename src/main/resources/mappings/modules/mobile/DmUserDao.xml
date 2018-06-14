@@ -15,6 +15,7 @@
 		a.phone_number AS "phoneNumber",
 		a.password AS "password",
 		a.head_portrait AS "headPortrait",
+		a.token AS "token",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -91,6 +92,7 @@
 			phone_number,
 			head_portrait,
 			password,
+			token,
 			create_by,
 			create_date,
 			update_by,
@@ -103,6 +105,7 @@
 			#{phoneNumber},
 			#{headPortrait},
 			#{password},
+			#{token},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -116,7 +119,8 @@
 		UPDATE dm_user SET
 		    nickname = #{nickname},
 			password = #{password},
-			head_portrait = #{headPortrait}
+			head_portrait = #{headPortrait},
+			token = #{token}
 		WHERE id = #{id}
 	</update>
 	

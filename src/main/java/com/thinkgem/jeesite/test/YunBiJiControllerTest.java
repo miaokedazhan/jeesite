@@ -4,7 +4,6 @@ package com.thinkgem.jeesite.test;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.SysCodeService;
-import com.thinkgem.jeesite.modules.mobile.service.SysTokenService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ public class YunBiJiControllerTest extends BaseController {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysTokenService sysTokenService;
     @Autowired
     private SysCodeService sysCodeService;
 

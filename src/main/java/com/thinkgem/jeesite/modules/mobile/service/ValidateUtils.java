@@ -18,8 +18,6 @@ public class ValidateUtils {
     @Autowired
     private DmUserService dmUserService;
     @Autowired
-    private SysTokenService sysTokenService;
-    @Autowired
     private SysCodeService sysCodeService;
 
     public static final int HASH_INTERATIONS = 1024;

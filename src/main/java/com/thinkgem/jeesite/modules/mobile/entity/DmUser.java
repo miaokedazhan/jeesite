@@ -1,10 +1,7 @@
 package com.thinkgem.jeesite.modules.mobile.entity;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.thinkgem.jeesite.common.persistence.DataEntity;
-
-import java.sql.Blob;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * 用户信息Entity
@@ -19,6 +16,8 @@ public class DmUser extends DataEntity<DmUser> {
 	private String password;		// 密码
 	private String headPortrait;	 // 用户头像
 	private String code; //手机验证码
+	private String token; //token信息
+	private Boolean isLogin = false; //是否异地登录
 
 	public DmUser() {
 		super();
@@ -67,5 +66,22 @@ public class DmUser extends DataEntity<DmUser> {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Boolean getIsLogin() {
+		return isLogin;
+	}
+
+	public void setIsLogin(Boolean login) {
+		isLogin = login;
 	}
 }

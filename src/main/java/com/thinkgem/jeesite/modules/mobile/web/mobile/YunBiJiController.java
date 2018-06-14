@@ -1,13 +1,13 @@
 package com.thinkgem.jeesite.modules.mobile.web.mobile;
 
 
+import com.thinkgem.jeesite.common.utils.JedisUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.UploadUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.SysCodeService;
-import com.thinkgem.jeesite.modules.mobile.service.SysTokenService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
@@ -35,8 +35,6 @@ public class YunBiJiController extends BaseController {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysTokenService sysTokenService;
     @Autowired
     private SysCodeService sysCodeService;
     @Autowired
@@ -74,6 +72,7 @@ public class YunBiJiController extends BaseController {
 //                            new File( request.getSession().getServletContext().getRealPath("/")+"upload/images/20180605161512_551.jpg").delete();
                             dmUser.setHeadPortrait(MobileUtils.URL + str[4]);
                             dmUserService.save(dmUser);
+                            JedisUtils.refushObject(dmUser.getToken(), dmUser);
                             Map<String, Object> map = new HashMap<String, Object>();
                             map.put("url", MobileUtils.URL + str[4]);
                             return MobileResult.ok(MobileUtils.STATUS_1030, map);
@@ -89,6 +88,7 @@ public class YunBiJiController extends BaseController {
                 case "2":
                     dmUser.setHeadPortrait(null);
                     dmUserService.save(dmUser);
+                    JedisUtils.refushObject(dmUser.getToken(), dmUser);
                     return MobileResult.ok(MobileUtils.STATUS_1032, "");
             }
             MobileResult mobileResult = new MobileResult();
@@ -131,7 +131,7 @@ public class YunBiJiController extends BaseController {
             }
             dmUser.setPassword(SystemService.entryptPassword(pwd));
             dmUserService.save(dmUser);
-            sysTokenService.deleteSysTokenByUserId(dmUser.getId());
+            JedisUtils.delObject(dmUser.getToken());
             return MobileResult.ok(MobileUtils.STATUS_1015, "");
         } catch (Exception e) {
             return MobileResult.exception(e.toString());
@@ -147,7 +147,7 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "loginout")
     public MobileResult loginout(HttpServletRequest request) {
         try {
-            sysTokenService.deleteSysTokenByToken(request.getHeader("token"));
+            JedisUtils.delObject(request.getHeader("token"));
             return MobileResult.ok(MobileUtils.STATUS_1019, "");
         } catch (Exception e) {
             return MobileResult.exception(e.toString());

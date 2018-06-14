@@ -21,6 +21,8 @@ public class MobileUtils {
     * 单位：天
     * */
     public static  final int Export_TIME=7;
+ public static final int Redis_Export_TIME = 1 * 60 * 60 * 24 * 7;
+ //public static  final int Redis_Export_TIME=60;
 
     /*
      * token过期时间

@@ -1,38 +1,30 @@
 package com.thinkgem.jeesite.modules.mobile.web.mobile;
 
 
-import com.thinkgem.jeesite.common.utils.*;
+import com.thinkgem.jeesite.common.utils.IdGen;
+import com.thinkgem.jeesite.common.utils.JedisUtils;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.SysCode;
-import com.thinkgem.jeesite.modules.mobile.entity.SysToken;
 import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.SysCodeService;
-import com.thinkgem.jeesite.modules.mobile.service.SysTokenService;
+import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.ALiYun;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
-import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
-import oracle.sql.BLOB;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
-import java.io.*;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 移动端登录前（无需token）Controller
@@ -46,8 +38,6 @@ public class LoginBeforeController extends BaseController {
 
     @Autowired
     private DmUserService dmUserService;
-    @Autowired
-    private SysTokenService sysTokenService;
     @Autowired
     private SysCodeService sysCodeService;
     @Autowired
@@ -176,7 +166,7 @@ public class LoginBeforeController extends BaseController {
                     DmUser dmUser3 = dmUserService.getUserByPhoneNumber(areaCode+mobile);
                     dmUser3.setPassword(SystemService.entryptPassword(password));
                     dmUserService.save(dmUser3);
-                    sysTokenService.deleteSysTokenByUserId(dmUser3.getId());
+                    JedisUtils.delObject(dmUser3.getToken());
                     sysCodeService.delete(sysCode2);
                     return MobileResult.ok(MobileUtils.STATUS_1015, "");
             }
@@ -204,14 +194,17 @@ public class LoginBeforeController extends BaseController {
             }
             DmUser dmUser = dmUserService.getUserByPhoneNumber(areaCode+mobile);
             if (validateUtils.validatePassword(password, dmUser.getPassword())) {
+                DmUser tokenDm = (DmUser) JedisUtils.getObject(dmUser.getToken());
+                if (tokenDm != null) {
+                    tokenDm.setIsLogin(true);
+                    JedisUtils.refushOlderObject(dmUser.getToken(), tokenDm);
+                }
                 String token = IdGen.uuid();
-                SysToken sysToken = new SysToken();
-                sysToken.setToken(token);
-                sysToken.setDmuserId(dmUser.getId());
-                sysToken.setExportTime(DateUtils.getDataNext(MobileUtils.Export_TIME));
-                sysTokenService.save(sysToken);
+                dmUser.setToken(token);
+                dmUserService.save(dmUser);
+                JedisUtils.setObject(token, dmUser, MobileUtils.Redis_Export_TIME);
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put("token", sysToken.getToken());
+                map.put("token", token);
                 return MobileResult.ok(MobileUtils.STATUS_1006, map);
             }
             return MobileResult.error(1005, MobileUtils.STATUS_1005);
