@@ -190,6 +190,7 @@ public class LoginBeforeController extends BaseController {
                 JedisUtils.setObject(token, dmUser, MobileUtils.Redis_Export_TIME);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("token", token);
+                map.put("nickname", dmUser.getNickname());
                 return MobileResult.ok(MobileUtils.STATUS_1006, map);
             }
             return MobileResult.error(1005, MobileUtils.STATUS_1005);

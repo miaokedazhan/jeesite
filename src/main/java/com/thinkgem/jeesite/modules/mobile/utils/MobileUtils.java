@@ -47,7 +47,7 @@ public class MobileUtils {
     public static  final String STATUS_1011="用户token过期了！";
     public static  final String STATUS_1012="服务器出错！";
     public static  final String STATUS_1013="手机号为空！";
-    public static  final String STATUS_1015="修改密码成功！";
+    public static final String STATUS_1015 = "修改个人信息成功！";
     public static  final String STATUS_1016="验证码已过期！";
     public static  final String STATUS_1017="密码为空！";
     public static  final String STATUS_1018="原始密码不正确！";
@@ -67,7 +67,7 @@ public class MobileUtils {
     public static  final String STATUS_1032="删除头像成功！";
     public static  final String STATUS_1033="上传头像系统错误！";
     public static  final String STATUS_1034="上传头像文件错误！";
-    public static  final String STATUS_1035="获取头像成功！";
+    public static final String STATUS_1035 = "获取个人信息成功！";
     public static  final String STATUS_1036="还没有头像，请上传！";
    public static final String STATUS_1040 = "请获取验证码！";
 }

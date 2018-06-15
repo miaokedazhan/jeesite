@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,32 +100,40 @@ public class YunBiJiController extends BaseController {
      *获取头像管理
      */
     @ResponseBody
-    @RequestMapping(value = "getHeadPortrait")
-    public MobileResult getHeadPortrait(HttpServletResponse response, DmUser dmUser) {
-        if(null==dmUser.getHeadPortrait()){
-           return MobileResult.ok(MobileUtils.STATUS_1036,"");
+    @RequestMapping(value = "getUserInfo")
+    public MobileResult getHeadPortrait(DmUser dmUser) {
+        dmUser.setPassword(null);
+        dmUser.setUpdateDate(null);
+        dmUser.setUpdateBy(null);
+        dmUser.setCreateBy(null);
+        dmUser.setCreateDate(null);
+        if (StringUtils.isEmpty(dmUser.getHeadPortrait())) {
+            dmUser.setHeadPortrait("");
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("url", dmUser.getHeadPortrait());
-        return  MobileResult.ok(MobileUtils.STATUS_1035,map);
-
+        return MobileResult.ok(MobileUtils.STATUS_1035, dmUser);
     }
 
     /*
      *817c9339d1e7598899e0876789930ee1822f860c6865218b00e2390e 对应密码1234
-     * 修改密码
+     * 修改个人信息
      * @param pwd  新密码
      * @param oldPwd 原始密码
+     * nickname 昵称
      */
     @ResponseBody
-    @RequestMapping(value = "updataPassword")
-    public MobileResult updataPassword(DmUser dmUser, String pwd, String oldPwd) {
+    @RequestMapping(value = "updataUserInfo")
+    public MobileResult updataPassword(DmUser dmUser, String pwd, String oldPwd, String nickname) {
         try {
             MobileResult mobileResult = new MobileResult();
-            if (!validateUtils.validatePassword(oldPwd, dmUser.getPassword())) {
-                return MobileResult.error(1018, MobileUtils.STATUS_1018);
+            if (!StringUtils.isEmpty(pwd) && !StringUtils.isEmpty(oldPwd)) {
+                if (!validateUtils.validatePassword(oldPwd, dmUser.getPassword())) {
+                    return MobileResult.error(1018, MobileUtils.STATUS_1018);
+                }
+                dmUser.setPassword(SystemService.entryptPassword(pwd));
             }
-            dmUser.setPassword(SystemService.entryptPassword(pwd));
+            if (!StringUtils.isEmpty(nickname)) {
+                dmUser.setNickname(nickname);
+            }
             dmUserService.save(dmUser);
             JedisUtils.delObject(dmUser.getToken());
             return MobileResult.ok(MobileUtils.STATUS_1015, "");
