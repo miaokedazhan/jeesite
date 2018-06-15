@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
  * @author 刘智科
  * @version 2018-05-09
  */
+//@JsonInclude(JsonInclude.Include.ALWAYS)
 public class DmUser extends DataEntity<DmUser> {
 	
 	private static final long serialVersionUID = 1L;
