@@ -179,6 +179,9 @@ public class LoginBeforeController extends BaseController {
             }
             DmUser dmUser = dmUserService.getUserByPhoneNumber(areaCode+mobile);
             if (validateUtils.validatePassword(password, dmUser.getPassword())) {
+                if (StringUtils.isEmpty(dmUser.getToken())) {
+                    dmUser.setToken("#############");
+                }
                 DmUser tokenDm = (DmUser) JedisUtils.getObject(dmUser.getToken());
                 if (tokenDm != null) {
                     tokenDm.setIsLogin(true);

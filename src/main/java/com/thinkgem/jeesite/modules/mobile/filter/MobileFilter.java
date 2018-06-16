@@ -3,6 +3,7 @@ package com.thinkgem.jeesite.modules.mobile.filter;
 
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.utils.JedisUtils;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
@@ -49,8 +50,13 @@ public class MobileFilter implements Filter {
             filterChain.doFilter(req, resp);
             return;
         }
+        DmUser tokenDm = null;
         String token=req.getHeader("token");
-        DmUser tokenDm = (DmUser) JedisUtils.getObject(token);
+        if (StringUtils.isEmpty(token)) {
+            System.out.println("tokn空了");
+        } else {
+            tokenDm = (DmUser) JedisUtils.getObject(token);
+        }
         if (tokenDm != null) {
             if (!tokenDm.getIsLogin()) {
                 JedisUtils.refushObject(token, tokenDm);
