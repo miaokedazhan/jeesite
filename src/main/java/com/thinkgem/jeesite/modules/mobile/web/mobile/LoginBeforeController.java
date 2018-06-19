@@ -202,6 +202,7 @@ public class LoginBeforeController extends BaseController {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("token", token);
                 map.put("nickname", dmUser.getNickname());
+                map.put("headPortrait", dmUser.getHeadPortrait());
                 map.put("countryCode", dmUser.getCountryCode());
                 map.put("phone", dmUser.getPhone());
                 return MobileResult.ok(MobileUtils.STATUS_1006, map);

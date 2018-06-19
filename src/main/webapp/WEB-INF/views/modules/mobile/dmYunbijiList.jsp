@@ -5,6 +5,7 @@
     <title>云笔记数据管理</title>
     <meta name="decorator" content="default"/>
     <script type="text/javascript">
+
         $(document).ready(function () {
 
         });
@@ -64,9 +65,9 @@
                 <img src="http://192.168.0.58:8080/loginBefore/getYunBiJi?id=${dmYunbiji.id}"
                      style="width: 50px;height: 50px;padding: 5px">
             </td>
-            <td><a href="${ctx}/mobile/dmYunbiji/form?id=${dmYunbiji.id}">
+            <td>
                 <fmt:formatDate value="${dmYunbiji.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-            </a></td>
+            </td>
             <shiro:hasPermission name="mobile:dmYunbiji:edit">
                 <td>
                     <a href="${ctx}/mobile/dmYunbiji/delete?id=${dmYunbiji.id}"
