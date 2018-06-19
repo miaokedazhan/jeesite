@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.mobile.dao.DmYunbijiDao">
+
+    <sql id="dmYunbijiColumns">
+		a.id AS "id",
+		d.phone_number AS "dmUser.phoneNumber",
+		d.nickname AS "dmUser.nickname",
+		a.biji_name AS "bijiName",
+		a.biji_size AS "bijiSize",
+		a.biji_type AS "bijiType",
+		a.biji AS "biji",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate"
+	</sql>
+
+    <sql id="dmYunbijiJoins">
+		left join dm_user d on d.id = a.user_id
+	</sql>
+
+    <select id="get" resultType="DmYunbiji">
+        SELECT
+        <include refid="dmYunbijiColumns"/>
+        FROM dm_yunbiji a
+        <include refid="dmYunbijiJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="DmYunbiji">
+        SELECT
+        <include refid="dmYunbijiColumns"/>
+        FROM dm_yunbiji a
+        <include refid="dmYunbijiJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="DmYunbiji">
+        SELECT
+        <include refid="dmYunbijiColumns"/>
+        FROM dm_yunbiji a
+        <include refid="dmYunbijiJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO dm_yunbiji(
+			id,
+			user_id,
+			biji_name,
+			biji_size,
+			biji_type,
+			biji,
+			create_date,
+			update_date
+		) VALUES (
+			#{id},
+			#{name},
+			#{bijiName},
+			#{bijiSize},
+			#{bijiType},
+			#{biji},
+			#{createDate},
+			#{updateDate}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE dm_yunbiji SET 	
+			user_id = #{name},
+			biji_name = #{bijiName},
+			biji_size = #{bijiSize},
+			biji_type = #{bijiType},
+			biji = #{biji},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM dm_yunbiji
+		WHERE id = #{id}
+	</update>
+
+
+    <insert id="saveYunBiJi">
+		INSERT INTO dm_yunbiji(
+			id,
+			user_id,
+			biji_name,
+			biji_size,
+			biji_type,
+			biji,
+			create_date,
+			update_date
+		) VALUES (
+			#{id},
+			#{name},
+			#{bijiName},
+			#{bijiSize},
+			#{bijiType},
+			#{biji},
+			#{createDate},
+			#{updateDate}
+		)
+	</insert>
+
+    <update id="updataYunBiJi">
+		UPDATE dm_yunbiji SET
+			biji_size = #{bijiSize},
+			biji = #{biji},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updataYunBiJiName">
+		UPDATE dm_yunbiji SET
+			biji_name = #{bijiName},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+</mapper>

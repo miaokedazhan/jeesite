@@ -7,8 +7,10 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
+import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
+import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.ALiYun;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
@@ -19,6 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +45,8 @@ public class LoginBeforeController extends BaseController {
     private ValidateUtils validateUtils;
     @Autowired
     private DmCountryService dmCountryService;
-
+    @Autowired
+    private DmYunbijiService dmYunbijiService;
     /*
      * 获取验证码
      *
@@ -255,5 +261,26 @@ public class LoginBeforeController extends BaseController {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, MobileUtils.CODE_Export_TIME);
         return calendar.getTime();
+    }
+
+    /*
+     * 获取笔记
+     */
+    @ResponseBody
+    @RequestMapping(value = "getYunBiJi")
+    public void getHeadPortrait(HttpServletResponse response, String id) {
+        response.setContentType("image/jpeg");
+        DmYunbiji dmYunbiji = new DmYunbiji();
+        dmYunbiji.setId(id);
+        dmYunbiji = dmYunbijiService.get(dmYunbiji);
+        try {
+            byte[] picture = (byte[]) dmYunbiji.getBiji();
+            ServletOutputStream os = response.getOutputStream();
+            os.write(picture);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

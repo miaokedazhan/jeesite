@@ -1,16 +1,19 @@
 package com.thinkgem.jeesite.modules.mobile.web.mobile;
 
 
-import com.thinkgem.jeesite.common.utils.JedisUtils;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.common.utils.UploadUtils;
+import com.thinkgem.jeesite.common.utils.*;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
+import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
+import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,7 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +43,8 @@ public class YunBiJiController extends BaseController {
     private DmUserService dmUserService;
     @Autowired
     private ValidateUtils validateUtils;
+    @Autowired
+    private DmYunbijiService dmYunbijiService;
 
     @ModelAttribute
     public DmUser init(HttpServletRequest request) {
@@ -157,6 +167,124 @@ public class YunBiJiController extends BaseController {
             return MobileResult.exception(e.toString());
         }
     }
+
+
+    /*
+     *云笔记上传
+     */
+    @ResponseBody
+    @RequestMapping(value = "uploadYunBiJi")
+    public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
+        try {
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding("UTF-8");
+            if (!ServletFileUpload.isMultipartContent(request)) {
+                return MobileResult.error(1031, MobileUtils.STATUS_1031);
+            }
+            List<FileItem> list = upload.parseRequest(request);
+            for (FileItem item : list) {
+                if (item.isFormField()) {
+                    String name = item.getFieldName();
+                    String value = item.getString("UTF-8");
+                    System.out.println(name + "=" + value);
+                } else {
+                    String filename = item.getName();
+                    System.out.println(filename);
+                    InputStream in = item.getInputStream();
+                    byte[] picture = new byte[]{};
+                    picture = StreamUtils.InputStreamTOByte(in);
+                    Blob blob = new SerialBlob(picture);
+                    /**
+                     #内容
+                     */
+                    DmYunbiji dmYunbiji = new DmYunbiji();
+                    dmYunbiji.setBiji(blob);
+                    dmYunbiji.setCreateDate(new Date());
+                    dmYunbiji.setName(dmUser);
+                    dmYunbiji.setId(IdGen.getID12());
+                    dmYunbiji.setBijiName("###");
+                    dmYunbiji.setBijiSize("***");
+                    dmYunbiji.setBijiType("&&&");
+                    dmYunbijiService.saveYunBiJi(dmYunbiji);
+                    in.close();
+                    item.delete();
+                }
+                return MobileResult.ok(MobileUtils.STATUS_1041, "");
+            }
+        } catch (Exception e) {
+            return MobileResult.exception(e.toString());
+        }
+        return MobileResult.error(500, "失败！");
+    }
+
+    /*
+     *云笔记上传
+     */
+    @ResponseBody
+    @RequestMapping(value = "updataYunBiJi")
+    public MobileResult updataYunBiJi(HttpServletRequest request, String id) {
+        try {
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding("UTF-8");
+            if (!ServletFileUpload.isMultipartContent(request)) {
+                return MobileResult.error(1031, MobileUtils.STATUS_1031);
+            }
+            List<FileItem> list = upload.parseRequest(request);
+            for (FileItem item : list) {
+                if (item.isFormField()) {
+                    String name = item.getFieldName();
+                    String value = item.getString("UTF-8");
+                    System.out.println(name + "=" + value);
+                } else {
+                    String filename = item.getName();
+                    System.out.println(filename);
+                    InputStream in = item.getInputStream();
+                    byte[] picture = new byte[]{};
+                    picture = StreamUtils.InputStreamTOByte(in);
+                    Blob blob = new SerialBlob(picture);
+                    /**
+                     #内容
+                     */
+                    DmYunbiji dmYunbiji = new DmYunbiji();
+                    dmYunbiji.setId(id);
+                    dmYunbiji.setBiji(blob);
+                    dmYunbiji.setBijiSize("@@@@");
+                    dmYunbiji.setUpdateDate(new Date());
+                    dmYunbijiService.updataYunBiJi(dmYunbiji);
+                    in.close();
+                    item.delete();
+                }
+                return MobileResult.ok(MobileUtils.STATUS_1042, "");
+            }
+        } catch (Exception e) {
+            return MobileResult.exception(e.toString());
+        }
+        return MobileResult.error(500, "失败！");
+    }
+
+    /*
+     *云笔记修改名称
+     * String id    笔记的id
+     * String name  笔记的新名称
+     */
+    @ResponseBody
+    @RequestMapping(value = "updataYunBiJiName")
+    public MobileResult updataYunBiJiName(String id, String name) {
+        try {
+            DmYunbiji dmYunbiji = new DmYunbiji();
+            dmYunbiji.setId(id);
+            dmYunbiji.setBijiName(name);
+            dmYunbiji.setUpdateDate(new Date());
+            dmYunbijiService.updataYunBiJiName(dmYunbiji);
+            return MobileResult.ok(MobileUtils.STATUS_1042, "");
+        } catch (Exception e) {
+            return MobileResult.exception(e.toString());
+        }
+    }
+
+
 
 
 }

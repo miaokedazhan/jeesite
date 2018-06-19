@@ -69,5 +69,7 @@ public class MobileUtils {
     public static  final String STATUS_1034="上传头像文件错误！";
     public static final String STATUS_1035 = "获取个人信息成功！";
     public static  final String STATUS_1036="还没有头像，请上传！";
-   public static final String STATUS_1040 = "请获取验证码！";
+    public static final String STATUS_1040 = "请获取验证码！";
+    public static final String STATUS_1041 = "笔记上传成功！";
+    public static final String STATUS_1042 = "笔记修改成功！";
 }

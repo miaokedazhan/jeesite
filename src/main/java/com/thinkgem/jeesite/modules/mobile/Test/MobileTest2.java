@@ -24,10 +24,10 @@ public class MobileTest2  {
      */
     @Test
       public void uploadHeadPortrait() {
-          String url = "http://localhost:8080/yunbiji/headPortrait?type=1";
+        String url = "http://localhost:8080/yunbiji/updataYunBiJi";
           HttpPost httpPost = new HttpPost(url);
           CloseableHttpClient client = HttpClients.createDefault();
-          String fileUrl = "C:/Users/007/Desktop/22.jpg";
+        String fileUrl = "C:/Users/007/Desktop/20180608165800_653.jpg";
           String boundary = "-------------------------7e020233150564";//编节符
           String prefix = "--";//前缀 上传时需要多出两个-- 一定需要注意！！！
           String end = "\r\n";//这里也需要注意，在html协议中，用 “/r/n” 换行，而不是 “/n”。
@@ -43,7 +43,7 @@ public class MobileTest2  {
                * 通过Content-Type协议向服务器上传数据
                * boundary
                * */
-              conn.setRequestProperty("token", "0434dbe95a8041bdba36a06d406c39d1");
+              conn.setRequestProperty("token", "da67146181ef461091181d8e538a26c7");
               conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
               //创建一个输出流对象，
