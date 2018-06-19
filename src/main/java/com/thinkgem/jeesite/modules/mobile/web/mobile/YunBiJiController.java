@@ -97,7 +97,7 @@ public class YunBiJiController extends BaseController {
 
 
     /*
-     *获取头像管理
+     *获取用户信息
      */
     @ResponseBody
     @RequestMapping(value = "getUserInfo")

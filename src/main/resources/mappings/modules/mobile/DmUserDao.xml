@@ -12,6 +12,8 @@
 	<sql id="dmUserColumns">
 		a.id AS "id",
 		a.nickname AS "nickname",
+		a.country_code AS "countryCode",
+		a.phone AS "phone",
 		a.phone_number AS "phoneNumber",
 		a.password AS "password",
 		a.head_portrait AS "headPortrait",
@@ -89,6 +91,8 @@
 		INSERT INTO dm_user(
 		    id,
 			nickname,
+			country_code,
+			phone,
 			phone_number,
 			head_portrait,
 			password,
@@ -102,6 +106,8 @@
 		) VALUES (
 		    #{id},
 			#{nickname},
+			#{countryCode},
+			#{phone},
 			#{phoneNumber},
 			#{headPortrait},
 			#{password},

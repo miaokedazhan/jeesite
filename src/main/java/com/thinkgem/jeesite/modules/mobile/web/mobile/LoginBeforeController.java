@@ -131,6 +131,8 @@ public class LoginBeforeController extends BaseController {
                     }
                     dmUser.setPassword(SystemService.entryptPassword(password));
                     String id = IdGen.getID12();
+                    dmUser.setCountryCode(areaCode);
+                    dmUser.setPhone(mobile);
                     dmUser.setId(id);
                     dmUser.setPhoneNumber(areaCode+mobile);
                     dmUser.setIsNewRecord(true);
@@ -194,6 +196,8 @@ public class LoginBeforeController extends BaseController {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("token", token);
                 map.put("nickname", dmUser.getNickname());
+                map.put("countryCode", dmUser.getCountryCode());
+                map.put("phone", dmUser.getPhone());
                 return MobileResult.ok(MobileUtils.STATUS_1006, map);
             }
             return MobileResult.error(1005, MobileUtils.STATUS_1005);

@@ -13,6 +13,8 @@ public class DmUser extends DataEntity<DmUser> {
 	
 	private static final long serialVersionUID = 1L;
 	private String nickname;		// 昵称
+    private String countryCode;        // 区号
+    private String phone;        // 手机号
 	private String phoneNumber;  //手机号（登录名）
 	private String password;		// 密码
 	private String headPortrait;	 // 用户头像
@@ -85,4 +87,20 @@ public class DmUser extends DataEntity<DmUser> {
 	public void setIsLogin(Boolean login) {
 		isLogin = login;
 	}
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }
