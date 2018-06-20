@@ -72,4 +72,6 @@ public class MobileUtils {
     public static final String STATUS_1040 = "请获取验证码！";
     public static final String STATUS_1041 = "笔记上传成功！";
     public static final String STATUS_1042 = "笔记修改成功！";
+    public static final String STATUS_1043 = "笔记删除成功！";
 }
+

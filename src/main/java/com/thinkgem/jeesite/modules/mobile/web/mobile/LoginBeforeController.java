@@ -7,7 +7,6 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
-import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
@@ -21,11 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -268,40 +262,8 @@ public class LoginBeforeController extends BaseController {
         return calendar.getTime();
     }
 
-    /*
-     * 获取笔记
-     */
-    @ResponseBody
-    @RequestMapping(value = "getYunBiJi")
-    public void getHeadPortrait(HttpServletResponse response, String id) {
-        response.setContentType("image/jpeg");
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbiji = dmYunbijiService.get(dmYunbiji);
-        try {
-            byte[] picture = (byte[]) dmYunbiji.getBiji();
-            ServletOutputStream os = response.getOutputStream();
-            os.write(picture);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    /*
-     * 获取笔记
-     */
-    @ResponseBody
-    @RequestMapping(value = "deletTest")
-    public MobileResult deletTest(HttpServletRequest request) {
 
-        String str = "http://192.168.0.58:8080/upload/images/20180614170010_674.jpg";
-        str = str.substring(MobileUtils.URL.length() + 1);
-        System.out.println(str);
-        new File(request.getSession().getServletContext().getRealPath("/") + str).delete();
-        return MobileResult.ok("1", "");
-    }
 
 
 }
