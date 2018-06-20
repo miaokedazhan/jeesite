@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
@@ -72,6 +73,10 @@ public class YunBiJiController extends BaseController {
                     String[] str = uploadUtils.uploadFile(request);
                     if (str != null && str.length > 0) {
                         if (str[0].equals("true") && str[1].equals("true")) {
+                            if (!StringUtils.isEmpty(dmUser.getHeadPortrait())) {
+                                System.out.println(dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1));
+                                new File(request.getSession().getServletContext().getRealPath("/") + dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1)).delete();
+                            }
                             //删除指定图片
 //                            String str="http://192.168.0.58:8080/upload/images/20180605161512_551.jpg";
 //                            str=str.substring(MobileUtils.URL.length()+1);
