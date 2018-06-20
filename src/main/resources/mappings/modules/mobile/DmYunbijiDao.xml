@@ -113,7 +113,7 @@
 			update_date
 		) VALUES (
 			#{id},
-			#{name},
+			#{dmUser.id},
 			#{bijiName},
 			#{bijiSize},
 			#{bijiType},
