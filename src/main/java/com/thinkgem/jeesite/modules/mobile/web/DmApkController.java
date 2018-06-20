@@ -3,9 +3,12 @@
  */
 package com.thinkgem.jeesite.modules.mobile.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
+import com.thinkgem.jeesite.modules.mobile.service.DmApkService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,12 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.thinkgem.jeesite.common.config.Global;
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
-import com.thinkgem.jeesite.modules.mobile.service.DmApkService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 移动版本管理Controller
@@ -71,8 +70,8 @@ public class DmApkController extends BaseController {
 		addMessage(redirectAttributes, "保存版本成功");
 		return "redirect:"+Global.getAdminPath()+"/mobile/dmApk/?repage";
 	}
-	
-	@RequiresPermissions("mobile:dmApk:edit")
+
+    @RequiresPermissions("mobile:dmApk:delete")
 	@RequestMapping(value = "delete")
 	public String delete(DmApk dmApk, RedirectAttributes redirectAttributes) {
 		dmApkService.delete(dmApk);
