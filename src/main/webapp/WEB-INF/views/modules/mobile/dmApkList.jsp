@@ -43,15 +43,17 @@
 				<th>名称</th>
 				<th>平台</th>
 				<th>版本</th>
-				<shiro:hasPermission name="mobile:dmApk:edit"><th>操作</th></shiro:hasPermission>
+				<shiro:hasPermission name="mobile:dmApk:delete">
+					<th>操作</th>
+				</shiro:hasPermission>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="dmApk">
 			<tr>
-				<td><a href="${ctx}/mobile/dmApk/form?id=${dmApk.id}">
+				<td>
 					${dmApk.packagename}
-				</a></td>
+				</td>
 				<td>
 					${dmApk.name}
 				</td>
@@ -61,7 +63,8 @@
 				<td>
 					${dmApk.version}
 				</td>
-				<shiro:hasPermission name="mobile:dmApk:edit"><td>
+				<shiro:hasPermission name="mobile:dmApk:delete">
+					<td>
     				<a href="${ctx}/mobile/dmApk/form?id=${dmApk.id}">修改</a>
 					<a href="${ctx}/mobile/dmApk/delete?id=${dmApk.id}" onclick="return confirmx('确认要删除该版本吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>

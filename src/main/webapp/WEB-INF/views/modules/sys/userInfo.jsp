@@ -27,7 +27,9 @@
 <body>
 <ul class="nav nav-tabs">
 	<li class="active"><a href="${ctx}/sys/user/info">个人信息</a></li>
-	<li><a href="${ctx}/sys/user/modifyPwd">修改密码</a></li>
+    <shiro:hasPermission name="sys:user:modifyPwd">
+        <li><a href="${ctx}/sys/user/modifyPwd">修改密码</a></li>
+    </shiro:hasPermission>
 </ul>
 <br/>
 <form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/info" method="post" class="form-horizontal"><%--

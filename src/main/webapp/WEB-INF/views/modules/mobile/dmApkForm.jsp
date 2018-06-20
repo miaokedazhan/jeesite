@@ -50,7 +50,10 @@
 		<div class="control-group">
 			<label class="control-label">平台：</label>
 			<div class="controls">
-				<form:input path="os" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
+                <form:select path="os" class="input-medium">
+                    <form:options items="${fns:getDictList('MOBILE_SERSION')}" itemLabel="label" itemValue="value"
+                                  htmlEscape="false"/>
+                </form:select>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>

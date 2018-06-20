@@ -54,23 +54,6 @@ public class DmYunbijiController extends BaseController {
         return "modules/mobile/dmYunbijiList";
     }
 
-    @RequiresPermissions("mobile:dmYunbiji:view")
-    @RequestMapping(value = "form")
-    public String form(DmYunbiji dmYunbiji, Model model) {
-        model.addAttribute("dmYunbiji", dmYunbiji);
-        return "modules/mobile/dmYunbijiForm";
-    }
-
-    @RequiresPermissions("mobile:dmYunbiji:edit")
-    @RequestMapping(value = "save")
-    public String save(DmYunbiji dmYunbiji, Model model, RedirectAttributes redirectAttributes) {
-        if (!beanValidator(model, dmYunbiji)) {
-            return form(dmYunbiji, model);
-        }
-        dmYunbijiService.save(dmYunbiji);
-        addMessage(redirectAttributes, "保存云笔记数据成功");
-        return "redirect:" + Global.getAdminPath() + "/mobile/dmYunbiji/?repage";
-    }
 
     @RequiresPermissions("mobile:dmYunbiji:edit")
     @RequestMapping(value = "delete")

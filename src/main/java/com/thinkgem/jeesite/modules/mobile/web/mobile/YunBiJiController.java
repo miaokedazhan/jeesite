@@ -315,7 +315,7 @@ public class YunBiJiController extends BaseController {
     }
 
     /*
-     * 获取笔记
+     * 删除笔记
      */
     @ResponseBody
     @RequestMapping(value = "deleteYunBiJi")
