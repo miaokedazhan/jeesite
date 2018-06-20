@@ -194,6 +194,7 @@ public class YunBiJiController extends BaseController {
                     String value = item.getString("UTF-8");
                     System.out.println(name + "=" + value);
                 } else {
+
                     String filename = item.getName();
                     System.out.println(filename);
                     InputStream in = item.getInputStream();
@@ -209,8 +210,8 @@ public class YunBiJiController extends BaseController {
                     dmYunbiji.setName(dmUser);
                     dmYunbiji.setId(IdGen.getID12());
                     dmYunbiji.setBijiName("###");
-                    dmYunbiji.setBijiSize("***");
-                    dmYunbiji.setBijiType("&&&");
+                    dmYunbiji.setBijiSize(request.getContentLength() / 1024 + "KB");
+                    dmYunbiji.setBijiType(filename.substring(filename.lastIndexOf(".") + 1).toLowerCase());
                     dmYunbijiService.saveYunBiJi(dmYunbiji);
                     in.close();
                     item.delete();
