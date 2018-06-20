@@ -52,7 +52,7 @@
 		<c:forEach items="${page.list}" var="dmApk">
 			<tr>
 				<td>
-					${dmApk.packagename}
+                        ${dmApk.packagename}
 				</td>
 				<td>
 					${dmApk.name}
