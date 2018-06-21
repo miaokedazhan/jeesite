@@ -77,7 +77,7 @@ public class YunBiJiController extends BaseController {
                     if (str != null && str.length > 0) {
                         if (str[0].equals("true") && str[1].equals("true")) {
                             if (!StringUtils.isEmpty(dmUser.getHeadPortrait())) {
-                                System.out.println(dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1));
+                                //     System.out.println(dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1));
                                 new File(request.getSession().getServletContext().getRealPath("/") + dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1)).delete();
                             }
                             //删除指定图片
@@ -195,11 +195,11 @@ public class YunBiJiController extends BaseController {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
-                    System.out.println(name + "=" + value);
+                    //     System.out.println(name + "=" + value);
                 } else {
 
                     String filename = item.getName();
-                    System.out.println(filename);
+                    //       System.out.println(filename);
                     InputStream in = item.getInputStream();
                     byte[] picture = new byte[]{};
                     picture = StreamUtils.InputStreamTOByte(in);
@@ -245,10 +245,10 @@ public class YunBiJiController extends BaseController {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
-                    System.out.println(name + "=" + value);
+                    //         System.out.println(name + "=" + value);
                 } else {
                     String filename = item.getName();
-                    System.out.println(filename);
+                    //  System.out.println(filename);
                     InputStream in = item.getInputStream();
                     byte[] picture = new byte[]{};
                     picture = StreamUtils.InputStreamTOByte(in);
