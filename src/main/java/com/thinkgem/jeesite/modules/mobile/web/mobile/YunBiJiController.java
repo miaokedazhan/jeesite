@@ -154,6 +154,7 @@ public class YunBiJiController extends BaseController {
             if (!StringUtils.isEmpty(nickname)) {
                 dmUser.setNickname(nickname);
                 dmUserService.save(dmUser);
+                JedisUtils.refushObject(dmUser.getToken(), dmUser);
             }
             return MobileResult.ok(MobileUtils.STATUS_1015, "");
         } catch (Exception e) {
