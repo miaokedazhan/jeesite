@@ -148,12 +148,13 @@ public class YunBiJiController extends BaseController {
                     return MobileResult.error(1018, MobileUtils.STATUS_1018);
                 }
                 dmUser.setPassword(SystemService.entryptPassword(pwd));
+                dmUserService.save(dmUser);
+                JedisUtils.delObject(dmUser.getToken());
             }
             if (!StringUtils.isEmpty(nickname)) {
                 dmUser.setNickname(nickname);
+                dmUserService.save(dmUser);
             }
-            dmUserService.save(dmUser);
-            JedisUtils.delObject(dmUser.getToken());
             return MobileResult.ok(MobileUtils.STATUS_1015, "");
         } catch (Exception e) {
             return MobileResult.exception(e.toString());
