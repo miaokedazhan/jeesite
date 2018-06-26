@@ -43,7 +43,7 @@ public class MobileTest2  {
                * 通过Content-Type协议向服务器上传数据
                * boundary
                * */
-              conn.setRequestProperty("token", "da67146181ef461091181d8e538a26c7");
+              conn.setRequestProperty("token", "f5da412cb7f74c85a9a18fcf5123eea0");
               conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
               //创建一个输出流对象，

@@ -13,6 +13,7 @@ import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
 import com.thinkgem.jeesite.modules.mobile.utils.ALiYun;
+import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
@@ -134,7 +135,7 @@ public class LoginBeforeController extends BaseController {
                     }
                     DmUser dmUser = new DmUser();
                     if (StringUtils.isNotBlank(nickname)) {
-                        dmUser.setNickname(nickname);
+                        dmUser.setNickname(EmojiUtil.emojiConvert1(nickname));
                     }
                     dmUser.setPassword(SystemService.entryptPassword(password));
                     String id = IdGen.getID12();
@@ -204,7 +205,7 @@ public class LoginBeforeController extends BaseController {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", dmUser.getId());
                 map.put("token", token);
-                map.put("nickname", dmUser.getNickname());
+                map.put("nickname", EmojiUtil.emojiRecovery2(dmUser.getNickname()));
                 map.put("headPortrait", dmUser.getHeadPortrait());
                 map.put("countryCode", dmUser.getCountryCode());
                 map.put("phone", dmUser.getPhone());

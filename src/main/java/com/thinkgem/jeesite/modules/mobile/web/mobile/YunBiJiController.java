@@ -8,6 +8,7 @@ import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
+import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
@@ -120,15 +121,20 @@ public class YunBiJiController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "getUserInfo")
     public MobileResult getHeadPortrait(DmUser dmUser) {
-        dmUser.setPassword(null);
-        dmUser.setUpdateDate(null);
-        dmUser.setUpdateBy(null);
-        dmUser.setCreateBy(null);
-        dmUser.setCreateDate(null);
-        if (StringUtils.isEmpty(dmUser.getHeadPortrait())) {
-            dmUser.setHeadPortrait("");
+        try {
+            dmUser.setPassword(null);
+            dmUser.setUpdateDate(null);
+            dmUser.setUpdateBy(null);
+            dmUser.setCreateBy(null);
+            dmUser.setCreateDate(null);
+            dmUser.setNickname(EmojiUtil.emojiRecovery2(dmUser.getNickname()));
+            if (StringUtils.isEmpty(dmUser.getHeadPortrait())) {
+                dmUser.setHeadPortrait("");
+            }
+            return MobileResult.ok(MobileUtils.STATUS_1035, dmUser);
+        } catch (Exception e) {
+            return MobileResult.exception(e.toString());
         }
-        return MobileResult.ok(MobileUtils.STATUS_1035, dmUser);
     }
 
     /*
@@ -152,7 +158,7 @@ public class YunBiJiController extends BaseController {
                 JedisUtils.delObject(dmUser.getToken());
             }
             if (!StringUtils.isEmpty(nickname)) {
-                dmUser.setNickname(nickname);
+                dmUser.setNickname(EmojiUtil.emojiConvert1(nickname));
                 dmUserService.save(dmUser);
                 JedisUtils.refushObject(dmUser.getToken(), dmUser);
             }
@@ -301,7 +307,6 @@ public class YunBiJiController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "getYunBiJi")
     public void getYunBiJi(HttpServletResponse response, String id) {
-        response.setContentType("image/jpeg");
         DmYunbiji dmYunbiji = new DmYunbiji();
         dmYunbiji.setId(id);
         dmYunbiji = dmYunbijiService.get(dmYunbiji);
