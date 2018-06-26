@@ -202,6 +202,7 @@ public class LoginBeforeController extends BaseController {
                 dmUserService.save(dmUser);
                 JedisUtils.setObject(token, dmUser, MobileUtils.Redis_Export_TIME);
                 Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", dmUser.getId());
                 map.put("token", token);
                 map.put("nickname", dmUser.getNickname());
                 map.put("headPortrait", dmUser.getHeadPortrait());
