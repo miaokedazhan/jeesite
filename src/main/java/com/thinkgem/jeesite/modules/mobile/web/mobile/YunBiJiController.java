@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
@@ -78,18 +76,17 @@ public class YunBiJiController extends BaseController {
                     if (str != null && str.length > 0) {
                         if (str[0].equals("true") && str[1].equals("true")) {
                             if (!StringUtils.isEmpty(dmUser.getHeadPortrait())) {
-                                //     System.out.println(dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1));
-                                new File(request.getSession().getServletContext().getRealPath("/") + dmUser.getHeadPortrait().substring(MobileUtils.URL.length() + 1)).delete();
+                                new File(request.getSession().getServletContext().getRealPath("/") + dmUser.getHeadPortrait()).delete();
                             }
                             //删除指定图片
 //                            String str="http://192.168.0.58:8080/upload/images/20180605161512_551.jpg";
 //                            str=str.substring(MobileUtils.URL.length()+1);
 //                            new File( request.getSession().getServletContext().getRealPath("/")+"upload/images/20180605161512_551.jpg").delete();
-                            dmUser.setHeadPortrait(MobileUtils.URL + str[4]);
+                            dmUser.setHeadPortrait(str[4]);
                             dmUserService.save(dmUser);
                             JedisUtils.refushObject(dmUser.getToken(), dmUser);
                             Map<String, Object> map = new HashMap<String, Object>();
-                            map.put("url", MobileUtils.URL + str[4]);
+                            map.put("url", str[4]);
                             return MobileResult.ok(MobileUtils.STATUS_1030, map);
                         }
                         if (str[0].equals("true")) {
@@ -306,19 +303,37 @@ public class YunBiJiController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getYunBiJi")
-    public void getYunBiJi(HttpServletResponse response, String id) {
+    public MobileResult getYunBiJi(HttpServletResponse response, String id) {
         DmYunbiji dmYunbiji = new DmYunbiji();
         dmYunbiji.setId(id);
         dmYunbiji = dmYunbijiService.get(dmYunbiji);
         try {
             byte[] picture = (byte[]) dmYunbiji.getBiji();
-            ServletOutputStream os = response.getOutputStream();
-            os.write(picture);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
+            String sendString = new String(picture, "ISO-8859-1");
+            return MobileResult.ok("", sendString);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return MobileResult.error(500, "******");
+    }
+
+    /*
+     * 获取笔记
+     */
+    @ResponseBody
+    @RequestMapping(value = "getYunBiJi2")
+    public MobileResult getYunBiJi2(HttpServletResponse response, String id) {
+        DmYunbiji dmYunbiji = new DmYunbiji();
+        dmYunbiji.setId(id);
+        dmYunbiji = dmYunbijiService.get(dmYunbiji);
+        try {
+            byte[] picture = (byte[]) dmYunbiji.getBiji();
+            //   String sendString = new String(picture, "ISO-8859-1");
+            return MobileResult.ok("", picture);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return MobileResult.error(500, "******");
     }
 
     /*

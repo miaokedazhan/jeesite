@@ -73,8 +73,8 @@ public class EmojiUtil {
             }
         }
         matcher.appendTail(sb);
-        System.out.println("emojiConvert " + str + " to " + sb.toString()
-                + ", len：" + sb.length());
+        //   System.out.println("emojiConvert " + str + " to " + sb.toString()
+        //         + ", len：" + sb.length());
         return sb.toString();
     }
 
@@ -102,7 +102,7 @@ public class EmojiUtil {
             }
         }
         matcher.appendTail(sb);
-        System.out.println("emojiRecovery " + str + " to " + sb.toString());
+        //   System.out.println("emojiRecovery " + str + " to " + sb.toString());
         return sb.toString();
     }
 }
