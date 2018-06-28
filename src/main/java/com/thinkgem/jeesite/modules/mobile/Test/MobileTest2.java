@@ -141,6 +141,7 @@ public class MobileTest2  {
         14         httpPost.setEntity(entity);*/
         String url = "http://localhost:8080/loginBefore/getDmCountry?type=1";
         try {
+
             URL http = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) http.openConnection();
             conn.setRequestMethod("POST");
