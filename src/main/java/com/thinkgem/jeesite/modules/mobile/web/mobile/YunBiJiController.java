@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.io.InputStream;
@@ -37,9 +36,8 @@ import java.util.Map;
 
 /**
  * 移动端登录之后（有token）Controller
- *
  * @author 刘智科
- * @version 2018-1-16
+ * @version 2018-6-16
  */
 @Controller
 @RequestMapping(value = "/yunbiji")
@@ -56,7 +54,6 @@ public class YunBiJiController extends BaseController {
     public DmUser init(HttpServletRequest request) {
         return (DmUser) request.getAttribute("dmUser");
     }
-
 
     /*
      * 头像管理
@@ -114,7 +111,6 @@ public class YunBiJiController extends BaseController {
         }
     }
 
-
     /*
      *获取用户信息
      */
@@ -148,7 +144,6 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "updataUserInfo")
     public MobileResult updataPassword(DmUser dmUser, String pwd, String oldPwd, String nickname) {
         try {
-            MobileResult mobileResult = new MobileResult();
             if (!StringUtils.isEmpty(pwd) && !StringUtils.isEmpty(oldPwd)) {
                 if (!validateUtils.validatePassword(oldPwd, dmUser.getPassword())) {
                     return MobileResult.error(1018, MobileUtils.STATUS_1018);
@@ -181,7 +176,6 @@ public class YunBiJiController extends BaseController {
             return MobileResult.exception(e.toString());
         }
     }
-
 
     /*
      *云笔记上传
@@ -263,13 +257,12 @@ public class YunBiJiController extends BaseController {
         }
     }
 
-
     /*
      * 获取笔记
      */
     @ResponseBody
     @RequestMapping(value = "getYunBiJi")
-    public MobileResult getYunBiJi(HttpServletResponse response, String id) {
+    public MobileResult getYunBiJi(String id) {
         DmYunbiji dmYunbiji = new DmYunbiji();
         dmYunbiji.setId(id);
         dmYunbiji = dmYunbijiService.get(dmYunbiji);
@@ -282,13 +275,12 @@ public class YunBiJiController extends BaseController {
         }
     }
 
-
     /*
      * 删除笔记
      */
     @ResponseBody
     @RequestMapping(value = "deleteYunBiJi")
-    public MobileResult deleteYunBiJi(HttpServletResponse response, String id) {
+    public MobileResult deleteYunBiJi(String id) {
         DmYunbiji dmYunbiji = new DmYunbiji();
         dmYunbiji.setId(id);
         dmYunbijiService.delete(dmYunbiji);
