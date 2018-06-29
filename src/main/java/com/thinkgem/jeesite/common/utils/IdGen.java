@@ -3,17 +3,16 @@
  */
 package com.thinkgem.jeesite.common.utils;
 
-import java.io.Serializable;
-import java.security.SecureRandom;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
-
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.security.SecureRandom;
+import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * 封装各种生成唯一性ID算法的工具类.
@@ -51,9 +50,7 @@ public class IdGen implements IdGenerator, SessionIdGenerator {
 
 	public static synchronized  String getID12(){
 		Calendar calendar = Calendar.getInstance();
-		System.out.println(calendar.getTime().getTime());
 		Long data= calendar.getTime().getTime();
-		System.out.println(data.toString().substring(1));
 		return data.toString().substring(1);
 	}
 	

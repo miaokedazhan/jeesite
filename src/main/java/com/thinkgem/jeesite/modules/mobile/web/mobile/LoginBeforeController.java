@@ -268,7 +268,7 @@ public class LoginBeforeController extends BaseController {
     }
 
     /*
-     * 获取笔记
+     * 获取二进制流转直接输出图片
      */
     @ResponseBody
     @RequestMapping(value = "getYunBiJi")

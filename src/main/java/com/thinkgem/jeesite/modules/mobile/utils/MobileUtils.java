@@ -73,5 +73,6 @@ public class MobileUtils {
     public static final String STATUS_1041 = "笔记上传成功！";
     public static final String STATUS_1042 = "笔记修改成功！";
     public static final String STATUS_1043 = "笔记删除成功！";
+ public static final String STATUS_1044 = "获取笔记成功！";
 }
 
