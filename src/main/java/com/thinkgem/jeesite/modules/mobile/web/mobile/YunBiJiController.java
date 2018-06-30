@@ -178,10 +178,10 @@ public class YunBiJiController extends BaseController {
     }
 
     /*
-     *云笔记上传
+     *云笔记上传-流
      */
     @ResponseBody
-    @RequestMapping(value = "uploadYunBiJi")
+    @RequestMapping(value = "uploadYunBiJiFromByte")
     public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
             DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -191,18 +191,20 @@ public class YunBiJiController extends BaseController {
                 return MobileResult.error(1031, MobileUtils.STATUS_1031);
             }
             List<FileItem> list = upload.parseRequest(request);
+            String id = null;
+            int size = 0;
             for (FileItem item : list) {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
-                    //     System.out.println(name + "=" + value);
+                    System.out.println(name + "=" + value);
                 } else {
-
                     String filename = item.getName();
                     //       System.out.println(filename);
                     InputStream in = item.getInputStream();
                     byte[] picture = new byte[]{};
                     picture = StreamUtils.InputStreamTOByte(in);
+                    size = picture.length;
                     Blob blob = new SerialBlob(picture);
                     /**
                      #内容
@@ -211,7 +213,8 @@ public class YunBiJiController extends BaseController {
                     dmYunbiji.setBiji(blob);
                     dmYunbiji.setCreateDate(new Date());
                     dmYunbiji.setName(dmUser);
-                    dmYunbiji.setId(IdGen.getID12());
+                    id = IdGen.getID12();
+                    dmYunbiji.setId(id);
                     dmYunbiji.setBijiName("###");
                     dmYunbiji.setBijiSize(request.getContentLength() / 1024 + "KB");
                     dmYunbiji.setBijiType(filename.substring(filename.lastIndexOf(".") + 1).toLowerCase());
@@ -219,12 +222,32 @@ public class YunBiJiController extends BaseController {
                     in.close();
                     item.delete();
                 }
-                return MobileResult.ok(MobileUtils.STATUS_1041, "");
             }
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", id);
+            map.put("size", size / 1024);
+            return MobileResult.ok(MobileUtils.STATUS_1041, map);
         } catch (Exception e) {
             return MobileResult.exception(e.toString());
         }
-        return MobileResult.error(500, "失败！");
+    }
+
+    /*
+     * 获取笔记-流
+     */
+    @ResponseBody
+    @RequestMapping(value = "getYunBiJiFromByte")
+    public MobileResult getYunBiJifromByte(String id) {
+        DmYunbiji dmYunbiji = new DmYunbiji();
+        dmYunbiji.setId(id);
+        dmYunbiji = dmYunbijiService.get(dmYunbiji);
+        try {
+            byte[] picture = (byte[]) dmYunbiji.getBiji();
+            String sendString = new String(picture, "ISO-8859-1");
+            return MobileResult.ok(MobileUtils.STATUS_1044, sendString);
+        } catch (Exception e) {
+            return MobileResult.exception("error " + e.toString());
+        }
     }
 
     /*
@@ -234,9 +257,14 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "uploadYunBiJiFromJson")
     public MobileResult uploadYunBiJiFromJson(@RequestBody List<Path> listMap, DmUser dmUser) {
         try {
+
             JSONArray jsonObject = JSONArray.fromObject(listMap);
            /* String sendString=new String(  bytes , "ISO-8859-1" );
             byte[] Mybytes=isoString.getBytes(  "ISO-8859-1" );*/
+     /*       Test.generateNewText("D:\\temp.txt",jsonObject.toString());
+            System.out.println("字符串長度"+jsonObject.toString().length());
+            byte[]  bytes = jsonObject.toString().getBytes("ISO-8859-1");
+            System.out.println("字節長度"+bytes.length);*/
             Blob blob = new SerialBlob(jsonObject.toString().getBytes("ISO-8859-1"));
             String id = IdGen.getID12();
             System.out.println("id = " + id);
@@ -258,7 +286,7 @@ public class YunBiJiController extends BaseController {
     }
 
     /*
-     * 获取笔记
+     * 获取笔记-json
      */
     @ResponseBody
     @RequestMapping(value = "getYunBiJi")

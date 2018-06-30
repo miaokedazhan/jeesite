@@ -27,7 +27,7 @@ public class MobileTest2  {
      */
     @Test
       public void uploadHeadPortrait() {
-        String url = "http://127.0.0.1:8989/yunbiji/headPortrait?type=1";
+        String url = "http://127.0.0.1:8080/yunbiji/uploadYunBiJiFromByte";
           HttpPost httpPost = new HttpPost(url);
           CloseableHttpClient client = HttpClients.createDefault();
         String fileUrl = "C:/Users/007/Desktop/20180608165800_653.jpg";
@@ -73,6 +73,22 @@ public class MobileTest2  {
               while ((len = fileInputStream.read(b)) != -1) {
                   out.write(b, 0, len);
               }
+              //写完数据后 回车换行
+              out.writeBytes(end);
+              out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
+              //这是第二行，文件名和对应服务器的
+              out.writeBytes("Content-Disposition: form-data; name=123？" + end);//这是第二行
+              out.writeBytes(end);//空一行
+              //以下写入图片
+              out.writeBytes("1231322123123131311");
+              //写完数据后 回车换行
+              out.writeBytes(end);
+              out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
+              //这是第二行，文件名和对应服务器的
+              out.writeBytes("Content-Disposition: form-data; name=121231？" + end);//这是第二行
+              out.writeBytes(end);//空一行
+              //以下写入图片
+              out.writeBytes("[{\"path\":[{\"color\":-16777216,\"intype\":2,\"penwidth\":4.0,\"state\":3,\"x\":71,\"y\":422}]}]");
               //写完数据后 回车换行
               out.writeBytes(end);
               out.writeBytes(prefix + boundary + prefix + end);
