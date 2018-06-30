@@ -225,7 +225,7 @@ public class YunBiJiController extends BaseController {
             }
             Map<String, Object> map = new HashMap<>();
             map.put("id", id);
-            map.put("size", size / 1024);
+            map.put("size", size);
             return MobileResult.ok(MobileUtils.STATUS_1041, map);
         } catch (Exception e) {
             return MobileResult.exception(e.toString());

@@ -60,8 +60,8 @@ public class MobileFilter implements Filter {
         if (tokenDm != null) {
             if (!tokenDm.getIsLogin()) {
                 JedisUtils.refushObject(token, tokenDm);
-                servletRequest.setAttribute("dmUser", tokenDm);
-                        filterChain.doFilter(servletRequest, servletResponse);
+                req.setAttribute("dmUser", tokenDm);
+                filterChain.doFilter(req, resp);
                         return;
             }else{
                 JedisUtils.delObject(token);
