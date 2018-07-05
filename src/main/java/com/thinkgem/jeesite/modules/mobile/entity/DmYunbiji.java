@@ -20,7 +20,8 @@ public class DmYunbiji extends DataEntity<DmYunbiji> {
     private String bijiName;        // 笔记名称
     private String bijiSize;        // 笔记大小
     private String bijiType;        // 笔记类型
-    private Object biji;        // 笔记内容
+    private Object biji; // 笔记内容
+    private Object bijiImage;// 笔记图片
 
     public DmYunbiji() {
         super();
@@ -74,4 +75,11 @@ public class DmYunbiji extends DataEntity<DmYunbiji> {
         this.biji = biji;
     }
 
+    public Object getBijiImage() {
+        return bijiImage;
+    }
+
+    public void setBijiImage(Object bijiImage) {
+        this.bijiImage = bijiImage;
+    }
 }

@@ -31,6 +31,7 @@ public class MobileTest2  {
           HttpPost httpPost = new HttpPost(url);
           CloseableHttpClient client = HttpClients.createDefault();
         String fileUrl = "C:/Users/007/Desktop/20180608165800_653.jpg";
+        String fileUrl2 = "C:/Users/007/Desktop/20180619115231_496.jpg";
           String boundary = "-------------------------7e020233150564";//编节符
           String prefix = "--";//前缀 上传时需要多出两个-- 一定需要注意！！！
           String end = "\r\n";//这里也需要注意，在html协议中，用 “/r/n” 换行，而不是 “/n”。
@@ -46,7 +47,7 @@ public class MobileTest2  {
                * 通过Content-Type协议向服务器上传数据
                * boundary
                * */
-              conn.setRequestProperty("token", "0eb810d79cf142958b71e0f2886a975b");
+              conn.setRequestProperty("token", "8118aa950f174f8888a0cbc235453c6e");
               conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
               //创建一个输出流对象，
@@ -63,7 +64,7 @@ public class MobileTest2  {
               //向服务器写入数据  这里就需要完全根据以上协议格式来写，需要仔细，避免出错。
               out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
               //这是第二行，文件名和对应服务器的
-              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileUrl + "\"" + end);//这是第二行
+              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"image1.note\"" + end);//这是第二行
               out.writeBytes(end);//空一行
               //以下写入图片
               FileInputStream fileInputStream = new FileInputStream(new File(fileUrl));
@@ -77,18 +78,17 @@ public class MobileTest2  {
               out.writeBytes(end);
               out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
               //这是第二行，文件名和对应服务器的
-              out.writeBytes("Content-Disposition: form-data; name=123？" + end);//这是第二行
+
+              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"image2\"" + end);//这是第二行
               out.writeBytes(end);//空一行
               //以下写入图片
-              out.writeBytes("1231322123123131311");
-              //写完数据后 回车换行
-              out.writeBytes(end);
-              out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
-              //这是第二行，文件名和对应服务器的
-              out.writeBytes("Content-Disposition: form-data; name=121231？" + end);//这是第二行
-              out.writeBytes(end);//空一行
-              //以下写入图片
-              out.writeBytes("[{\"path\":[{\"color\":-16777216,\"intype\":2,\"penwidth\":4.0,\"state\":3,\"x\":71,\"y\":422}]}]");
+              FileInputStream fileInputStream2 = new FileInputStream(new File(fileUrl2));
+              byte[] b2 = new byte[1024 * 4];//缓冲区
+              int len2;
+              //循环读数据
+              while ((len2 = fileInputStream2.read(b2)) != -1) {
+                  out.write(b2, 0, len2);
+              }
               //写完数据后 回车换行
               out.writeBytes(end);
               out.writeBytes(prefix + boundary + prefix + end);

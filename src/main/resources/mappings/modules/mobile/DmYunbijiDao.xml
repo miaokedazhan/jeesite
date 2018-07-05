@@ -10,6 +10,7 @@
 		a.biji_size AS "bijiSize",
 		a.biji_type AS "bijiType",
 		a.biji AS "biji",
+		a.biji_image AS "bijiImage",
 		a.create_date AS "createDate",
 		a.update_date AS "updateDate"
 	</sql>
@@ -70,6 +71,7 @@
 			biji_size,
 			biji_type,
 			biji,
+			biji_image,
 			create_date,
 			update_date
 		) VALUES (
@@ -79,6 +81,7 @@
 			#{bijiSize},
 			#{bijiType},
 			#{biji},
+			#{bijiImage},
 			#{createDate},
 			#{updateDate}
 		)
@@ -91,6 +94,7 @@
 			biji_size = #{bijiSize},
 			biji_type = #{bijiType},
 			biji = #{biji},
+			biji_image = #{bijiImage},
 			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
@@ -109,6 +113,7 @@
 			biji_size,
 			biji_type,
 			biji,
+			biji_image,
 			create_date,
 			update_date
 		) VALUES (
@@ -118,6 +123,7 @@
 			#{bijiSize},
 			#{bijiType},
 			#{biji},
+			#{bijiImage},
 			#{createDate},
 			#{updateDate}
 		)
@@ -127,6 +133,7 @@
 		UPDATE dm_yunbiji SET
 			biji_size = #{bijiSize},
 			biji = #{biji},
+			biji_image = #{bijiImage},
 			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
@@ -137,5 +144,15 @@
 			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
+
+	<select id="getYunBiJiList" resultType="DmYunbiji">
+		SELECT
+		a.id AS "id",
+		a.biji_name AS "bijiName",
+		a.biji_size AS "bijiSize"
+		FROM dm_yunbiji a
+		left join dm_user d on d.id = a.user_id
+		WHERE d.id = #{dmUser.id}
+	</select>
 
 </mapper>

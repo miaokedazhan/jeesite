@@ -268,17 +268,18 @@ public class LoginBeforeController extends BaseController {
     }
 
     /*
-     * 获取二进制流转直接输出图片
+     * 获取笔记缩略图
      */
     @ResponseBody
-    @RequestMapping(value = "getYunBiJi")
-    public void getYunBiJi(HttpServletResponse response, String id) {
-        response.setContentType("image/jpeg");
+    @RequestMapping(value = "getYunBiJiImage")
+    public void getYunBiJiImage(HttpServletResponse response, String id) {
+        response.setContentType(" image/jpeg");
+        // response.setContentType("image/png");
         DmYunbiji dmYunbiji = new DmYunbiji();
         dmYunbiji.setId(id);
         dmYunbiji = dmYunbijiService.get(dmYunbiji);
         try {
-            byte[] picture = (byte[]) dmYunbiji.getBiji();
+            byte[] picture = (byte[]) dmYunbiji.getBijiImage();
             ServletOutputStream os = response.getOutputStream();
             os.write(picture);
             os.flush();
@@ -287,7 +288,4 @@ public class LoginBeforeController extends BaseController {
             e.printStackTrace();
         }
     }
-
-
-
 }

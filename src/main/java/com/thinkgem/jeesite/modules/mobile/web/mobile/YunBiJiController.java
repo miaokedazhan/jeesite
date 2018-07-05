@@ -5,6 +5,8 @@ import com.thinkgem.jeesite.common.utils.*;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.FileBean;
 import com.thinkgem.jeesite.modules.mobile.entity.Mobile.Path;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
@@ -24,18 +26,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 移动端登录之后（有token）Controller
+ *
  * @author 刘智科
  * @version 2018-6-16
  */
@@ -184,6 +187,8 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "uploadYunBiJiFromByte")
     public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
+            String token = request.getHeader("token");
+            System.out.println("token ====>" + token);
             DiskFileItemFactory factory = new DiskFileItemFactory();
             ServletFileUpload upload = new ServletFileUpload(factory);
             upload.setHeaderEncoding("UTF-8");
@@ -192,7 +197,9 @@ public class YunBiJiController extends BaseController {
             }
             List<FileItem> list = upload.parseRequest(request);
             String id = null;
-            int size = 0;
+            DmYunbiji dmYunbiji = new DmYunbiji();
+            FileBean fileBean = new FileBean();
+            List<FileBean> fileBeanList = new ArrayList<FileBean>();
             for (FileItem item : list) {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
@@ -200,33 +207,38 @@ public class YunBiJiController extends BaseController {
                     System.out.println(name + "=" + value);
                 } else {
                     String filename = item.getName();
-                    //       System.out.println(filename);
+                    System.out.println(filename);
                     InputStream in = item.getInputStream();
                     byte[] picture = new byte[]{};
                     picture = StreamUtils.InputStreamTOByte(in);
-                    size = picture.length;
                     Blob blob = new SerialBlob(picture);
                     /**
                      #内容
                      */
-                    DmYunbiji dmYunbiji = new DmYunbiji();
-                    dmYunbiji.setBiji(blob);
-                    dmYunbiji.setCreateDate(new Date());
-                    dmYunbiji.setName(dmUser);
-                    id = IdGen.getID12();
-                    dmYunbiji.setId(id);
-                    dmYunbiji.setBijiName("###");
-                    dmYunbiji.setBijiSize(request.getContentLength() / 1024 + "KB");
-                    dmYunbiji.setBijiType(filename.substring(filename.lastIndexOf(".") + 1).toLowerCase());
-                    dmYunbijiService.saveYunBiJi(dmYunbiji);
+                    if (filename.indexOf(".note") == -1) {
+                        dmYunbiji.setBijiImage(blob);
+                        dmYunbijiService.saveYunBiJi(dmYunbiji);
+                        fileBean.setId(id);
+                        fileBean.setFilename(filename);
+                        fileBean.setFilesize(request.getContentLength() + "byte");
+                        fileBeanList.add(fileBean);
+                    } else {
+                        dmYunbiji.setBiji(blob);
+                        dmYunbiji.setCreateDate(new Date());
+                        dmYunbiji.setName(dmUser);
+                        id = IdGen.getID12();
+                        System.out.println("id==" + id);
+                        dmYunbiji.setId(id);
+                        dmYunbiji.setBijiName(filename);
+                        dmYunbiji.setBijiSize(String.valueOf(request.getContentLength()));
+                        dmYunbiji.setBijiType(filename.substring(filename.lastIndexOf(".") + 1).toLowerCase());
+                    }
                     in.close();
                     item.delete();
+
                 }
             }
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", id);
-            map.put("size", size);
-            return MobileResult.ok(MobileUtils.STATUS_1041, map);
+            return MobileResult.ok(MobileUtils.STATUS_1041, fileBeanList);
         } catch (Exception e) {
             return MobileResult.exception(e.toString());
         }
@@ -249,6 +261,45 @@ public class YunBiJiController extends BaseController {
             return MobileResult.exception("error " + e.toString());
         }
     }
+
+    /*
+     * 获取笔记账号所有笔记
+     */
+    @ResponseBody
+    @RequestMapping(value = "getAllYunBiJi")
+    public MobileResult getAllYunBiJi(DmUser dmUser) {
+        DmYunbiji dmYunbiji = new DmYunbiji();
+        dmYunbiji.setName(dmUser);
+        List<DmYunbiji> dmYunbijis = dmYunbijiService.getYunBiJiList(dmYunbiji);
+        try {
+            return MobileResult.ok(MobileUtils.STATUS_1044, ConverUtils.yunbijiListToBeanList(dmYunbijis));
+        } catch (Exception e) {
+            return MobileResult.exception("error " + e.toString());
+        }
+    }
+
+    /*
+     * 获取笔记缩略图
+     */
+    @ResponseBody
+    @RequestMapping(value = "getYunBiJiImage")
+    public void getYunBiJiImage(HttpServletResponse response, String id) {
+        response.setContentType(" image/jpeg");
+        // response.setContentType("image/png");
+        DmYunbiji dmYunbiji = new DmYunbiji();
+        dmYunbiji.setId(id);
+        dmYunbiji = dmYunbijiService.get(dmYunbiji);
+        try {
+            byte[] picture = (byte[]) dmYunbiji.getBijiImage();
+            ServletOutputStream os = response.getOutputStream();
+            os.write(picture);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /*
      *云笔记上传-json
@@ -315,8 +366,6 @@ public class YunBiJiController extends BaseController {
         return MobileResult.ok(MobileUtils.STATUS_1043, "");
 
     }
-
-
 
 
 }

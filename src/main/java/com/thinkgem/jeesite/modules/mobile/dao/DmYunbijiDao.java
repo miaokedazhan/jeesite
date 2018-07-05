@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 
+import java.util.List;
+
 /**
  * 云笔记数据DAO接口
  *
@@ -21,4 +23,6 @@ public interface DmYunbijiDao extends CrudDao<DmYunbiji> {
     void updataYunBiJi(DmYunbiji dmYunbiji);
 
     void updataYunBiJiName(DmYunbiji dmYunbiji);
+
+    List<DmYunbiji> getYunBiJiList(DmYunbiji dmYunbiji);
 }
