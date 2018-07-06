@@ -1,13 +1,15 @@
 package com.thinkgem.jeesite.modules.mobile.web.mobile;
 
 
-import com.thinkgem.jeesite.common.utils.*;
+import com.thinkgem.jeesite.common.utils.IdGen;
+import com.thinkgem.jeesite.common.utils.JedisUtils;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.utils.UploadUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
 import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
 import com.thinkgem.jeesite.modules.mobile.entity.Mobile.FileBean;
-import com.thinkgem.jeesite.modules.mobile.entity.Mobile.Path;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import com.thinkgem.jeesite.modules.mobile.service.ValidateUtils;
@@ -15,25 +17,18 @@ import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
-import net.sf.json.JSONArray;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -188,77 +183,82 @@ public class YunBiJiController extends BaseController {
     public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
             String token = request.getHeader("token");
-            System.out.println("token ====>" + token);
-            DiskFileItemFactory factory = new DiskFileItemFactory();
-            ServletFileUpload upload = new ServletFileUpload(factory);
-            upload.setHeaderEncoding("UTF-8");
+            // 文件保存目录相对路径
+            String basePath = "upload";
+            // 文件的目录名
+            String dirName = "data";
+            // 文件保存目录路径
+            String savePath;
+            // 文件保存目录url
+            String saveUrl;
+            // 上传临时路径
+            String TEMP_PATH = "/temp";
+            String tempPath = basePath + TEMP_PATH;
+            // 文件最终的url包括文件名
+            String fileUrl;
+
+            savePath = request.getSession().getServletContext().getRealPath("/") + basePath + "/";
+            // 文件保存目录URL
+            saveUrl = request.getContextPath() + "/" + basePath + "/";
+            File uploadDir = new File(savePath);
+            savePath += dirName + "/";
+            saveUrl += dirName + "/";
+            File saveDirFile = new File(savePath);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            tempPath = request.getSession().getServletContext().getRealPath("/") + tempPath + "/";
+            File file = new File(tempPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
             if (!ServletFileUpload.isMultipartContent(request)) {
                 return MobileResult.error(1031, MobileUtils.STATUS_1031);
             }
+
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            factory.setSizeThreshold(1024 * 1024 * 10);
+            factory.setRepository(new File(tempPath));
+
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding("UTF-8");
             List<FileItem> list = upload.parseRequest(request);
-            String id = null;
-            DmYunbiji dmYunbiji = new DmYunbiji();
-            FileBean fileBean = new FileBean();
             List<FileBean> fileBeanList = new ArrayList<FileBean>();
+            DmYunbiji dmYunbiji = new DmYunbiji();
             for (FileItem item : list) {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
                     System.out.println(name + "=" + value);
                 } else {
-                    String filename = item.getName();
-                    System.out.println(filename);
-                    InputStream in = item.getInputStream();
-                    byte[] picture = new byte[]{};
-                    picture = StreamUtils.InputStreamTOByte(in);
-                    Blob blob = new SerialBlob(picture);
-                    /**
-                     #内容
-                     */
-                    if (filename.indexOf(".note") == -1) {
-                        dmYunbiji.setBijiImage(blob);
-                        dmYunbijiService.saveYunBiJi(dmYunbiji);
-                        fileBean.setId(id);
-                        fileBean.setFilename(filename);
-                        fileBean.setFilesize(request.getContentLength() + "byte");
-                        fileBeanList.add(fileBean);
+                    String fileName = item.getName();
+                    String newFileName;
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    newFileName = df.format(new Date()) + "_" + fileName;
+                    fileUrl = saveUrl + newFileName;
+                    File uploadedFile = new File(savePath, newFileName);
+                    item.write(uploadedFile);
+                    dmYunbiji.setBiji(fileUrl);
+                    if (fileName.indexOf(".note") == -1) {
+                        dmYunbiji.setBijiImage(fileUrl);
                     } else {
-                        dmYunbiji.setBiji(blob);
+                        dmYunbiji.setBijiName(fileName);
                         dmYunbiji.setCreateDate(new Date());
                         dmYunbiji.setName(dmUser);
-                        id = IdGen.getID12();
+                        dmYunbiji.setBiji(fileUrl);
+                        String id = IdGen.getID12();
                         System.out.println("id==" + id);
                         dmYunbiji.setId(id);
-                        dmYunbiji.setBijiName(filename);
-                        dmYunbiji.setBijiSize(String.valueOf(request.getContentLength()));
-                        dmYunbiji.setBijiType(filename.substring(filename.lastIndexOf(".") + 1).toLowerCase());
+                        dmYunbiji.setBijiSize(String.valueOf(item.getSize()));
+                        dmYunbiji.setBijiType(".note");
+                        dmYunbijiService.saveYunBiJi(dmYunbiji);
+                        fileBeanList.add(ConverUtils.yunbijiToBean(dmYunbiji));
                     }
-                    in.close();
-                    item.delete();
-
                 }
             }
             return MobileResult.ok(MobileUtils.STATUS_1041, fileBeanList);
         } catch (Exception e) {
             return MobileResult.exception(e.toString());
-        }
-    }
-
-    /*
-     * 获取笔记-流
-     */
-    @ResponseBody
-    @RequestMapping(value = "getYunBiJiFromByte")
-    public MobileResult getYunBiJifromByte(String id) {
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbiji = dmYunbijiService.get(dmYunbiji);
-        try {
-            byte[] picture = (byte[]) dmYunbiji.getBiji();
-            String sendString = new String(picture, "ISO-8859-1");
-            return MobileResult.ok(MobileUtils.STATUS_1044, sendString);
-        } catch (Exception e) {
-            return MobileResult.exception("error " + e.toString());
         }
     }
 
@@ -273,82 +273,6 @@ public class YunBiJiController extends BaseController {
         List<DmYunbiji> dmYunbijis = dmYunbijiService.getYunBiJiList(dmYunbiji);
         try {
             return MobileResult.ok(MobileUtils.STATUS_1044, ConverUtils.yunbijiListToBeanList(dmYunbijis));
-        } catch (Exception e) {
-            return MobileResult.exception("error " + e.toString());
-        }
-    }
-
-    /*
-     * 获取笔记缩略图
-     */
-    @ResponseBody
-    @RequestMapping(value = "getYunBiJiImage")
-    public void getYunBiJiImage(HttpServletResponse response, String id) {
-        response.setContentType(" image/jpeg");
-        // response.setContentType("image/png");
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbiji = dmYunbijiService.get(dmYunbiji);
-        try {
-            byte[] picture = (byte[]) dmYunbiji.getBijiImage();
-            ServletOutputStream os = response.getOutputStream();
-            os.write(picture);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /*
-     *云笔记上传-json
-     */
-    @ResponseBody
-    @RequestMapping(value = "uploadYunBiJiFromJson")
-    public MobileResult uploadYunBiJiFromJson(@RequestBody List<Path> listMap, DmUser dmUser) {
-        try {
-
-            JSONArray jsonObject = JSONArray.fromObject(listMap);
-           /* String sendString=new String(  bytes , "ISO-8859-1" );
-            byte[] Mybytes=isoString.getBytes(  "ISO-8859-1" );*/
-     /*       Test.generateNewText("D:\\temp.txt",jsonObject.toString());
-            System.out.println("字符串長度"+jsonObject.toString().length());
-            byte[]  bytes = jsonObject.toString().getBytes("ISO-8859-1");
-            System.out.println("字節長度"+bytes.length);*/
-            Blob blob = new SerialBlob(jsonObject.toString().getBytes("ISO-8859-1"));
-            String id = IdGen.getID12();
-            System.out.println("id = " + id);
-            DmYunbiji dmYunbiji = new DmYunbiji();
-            dmYunbiji.setBiji(blob);
-            dmYunbiji.setCreateDate(new Date());
-            dmYunbiji.setName(dmUser);
-            dmYunbiji.setId(id);
-            dmYunbiji.setBijiName("#11##");
-            dmYunbiji.setBijiSize("#11##");
-            dmYunbiji.setBijiType("#11##");
-            dmYunbijiService.saveYunBiJi(dmYunbiji);
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", id);
-            return MobileResult.ok(MobileUtils.STATUS_1041, map);
-        } catch (Exception e) {
-            return MobileResult.exception("error " + e.toString());
-        }
-    }
-
-    /*
-     * 获取笔记-json
-     */
-    @ResponseBody
-    @RequestMapping(value = "getYunBiJi")
-    public MobileResult getYunBiJi(String id) {
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbiji = dmYunbijiService.get(dmYunbiji);
-        try {
-            byte[] picture = (byte[]) dmYunbiji.getBiji();
-            String sendString = new String(picture, "ISO-8859-1");
-            return MobileResult.ok(MobileUtils.STATUS_1044, sendString);
         } catch (Exception e) {
             return MobileResult.exception("error " + e.toString());
         }

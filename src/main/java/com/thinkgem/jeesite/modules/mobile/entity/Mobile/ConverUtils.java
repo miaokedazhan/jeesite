@@ -18,10 +18,21 @@ public class ConverUtils {
         FileBean fileBean = new FileBean();
         for (DmYunbiji dmYunbiji : dmYunbijis) {
             fileBean.setId(dmYunbiji.getId());
+            fileBean.setFileurl(dmYunbiji.getBiji());
+            fileBean.setImageurl(dmYunbiji.getBijiImage());
             fileBean.setFilename(dmYunbiji.getBijiName());
             fileBean.setFilesize(dmYunbiji.getBijiSize());
-            fileBeanList.add(fileBean);
         }
         return fileBeanList;
+    }
+
+    public static FileBean yunbijiToBean(DmYunbiji dmYunbiji) {
+        FileBean fileBean = new FileBean();
+        fileBean.setId(dmYunbiji.getId());
+        fileBean.setFileurl(dmYunbiji.getBiji());
+        fileBean.setImageurl(dmYunbiji.getBijiImage());
+        fileBean.setFilename(dmYunbiji.getBijiName());
+        fileBean.setFilesize(dmYunbiji.getBijiSize());
+        return fileBean;
     }
 }

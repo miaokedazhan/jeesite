@@ -8,6 +8,8 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmCountry;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.FileBean;
 import com.thinkgem.jeesite.modules.mobile.service.DmCountryService;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
@@ -17,18 +19,18 @@ import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 移动端登录前（无需token）Controller
@@ -39,6 +41,7 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/loginBefore")
 public class LoginBeforeController extends BaseController {
+
 
     @Autowired
     private DmUserService dmUserService;
@@ -268,24 +271,88 @@ public class LoginBeforeController extends BaseController {
     }
 
     /*
-     * 获取笔记缩略图
+     *云笔记上传-流
      */
     @ResponseBody
-    @RequestMapping(value = "getYunBiJiImage")
-    public void getYunBiJiImage(HttpServletResponse response, String id) {
-        response.setContentType(" image/jpeg");
-        // response.setContentType("image/png");
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbiji = dmYunbijiService.get(dmYunbiji);
+    @RequestMapping(value = "uploadYunBiJiFromByte")
+    public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
-            byte[] picture = (byte[]) dmYunbiji.getBijiImage();
-            ServletOutputStream os = response.getOutputStream();
-            os.write(picture);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            // 文件保存目录相对路径
+            String basePath = "upload";
+            // 文件的目录名
+            String dirName = "data";
+            // 文件保存目录路径
+            String savePath;
+            // 文件保存目录url
+            String saveUrl;
+            // 上传临时路径
+            String TEMP_PATH = "/temp";
+            String tempPath = basePath + TEMP_PATH;
+            // 文件最终的url包括文件名
+            String fileUrl;
+
+            savePath = request.getSession().getServletContext().getRealPath("/") + basePath + "/";
+            // 文件保存目录URL
+            saveUrl = request.getContextPath() + "/" + basePath + "/";
+            File uploadDir = new File(savePath);
+            savePath += dirName + "/";
+            saveUrl += dirName + "/";
+            File saveDirFile = new File(savePath);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            tempPath = request.getSession().getServletContext().getRealPath("/") + tempPath + "/";
+            File file = new File(tempPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            if (!ServletFileUpload.isMultipartContent(request)) {
+                return MobileResult.error(1031, MobileUtils.STATUS_1031);
+            }
+
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            factory.setSizeThreshold(1024 * 1024 * 10);
+            factory.setRepository(new File(tempPath));
+
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding("UTF-8");
+            List<FileItem> list = upload.parseRequest(request);
+            List<FileBean> fileBeanList = new ArrayList<FileBean>();
+            DmYunbiji dmYunbiji = new DmYunbiji();
+            for (FileItem item : list) {
+                if (item.isFormField()) {
+                    String name = item.getFieldName();
+                    String value = item.getString("UTF-8");
+                    System.out.println(name + "=" + value);
+                } else {
+                    String fileName = item.getName();
+                    String newFileName;
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    newFileName = df.format(new Date()) + "_" + fileName;
+                    fileUrl = saveUrl + newFileName;
+                    File uploadedFile = new File(savePath, newFileName);
+                    item.write(uploadedFile);
+                    dmYunbiji.setBiji(fileUrl);
+                    if (fileName.indexOf(".note") == -1) {
+                        dmYunbiji.setBijiImage(fileUrl);
+                    } else {
+                        dmYunbiji.setBijiName(fileName);
+                        dmYunbiji.setCreateDate(new Date());
+                        dmYunbiji.setName(dmUser);
+                        dmYunbiji.setBiji(fileUrl);
+                        String id = IdGen.getID12();
+                        System.out.println("id==" + id);
+                        dmYunbiji.setId(id);
+                        dmYunbiji.setBijiSize(String.valueOf(item.getSize()));
+                        dmYunbiji.setBijiType(".note");
+                        dmYunbijiService.saveYunBiJi(dmYunbiji);
+                        fileBeanList.add(ConverUtils.yunbijiToBean(dmYunbiji));
+                    }
+                }
+            }
+            return MobileResult.ok(MobileUtils.STATUS_1041, fileBeanList);
+        } catch (Exception e) {
+            return MobileResult.exception(e.toString());
         }
     }
 }

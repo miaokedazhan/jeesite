@@ -27,7 +27,7 @@ public class MobileTest2  {
      */
     @Test
       public void uploadHeadPortrait() {
-        String url = "http://127.0.0.1:8080/yunbiji/uploadYunBiJiFromByte";
+        String url = "http://127.0.0.1:8080/loginBefore/uploadYunBiJiFromByte";
           HttpPost httpPost = new HttpPost(url);
           CloseableHttpClient client = HttpClients.createDefault();
         String fileUrl = "C:/Users/007/Desktop/20180608165800_653.jpg";
@@ -64,7 +64,7 @@ public class MobileTest2  {
               //向服务器写入数据  这里就需要完全根据以上协议格式来写，需要仔细，避免出错。
               out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
               //这是第二行，文件名和对应服务器的
-              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"image1.note\"" + end);//这是第二行
+              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"image1\"" + end);//这是第二行
               out.writeBytes(end);//空一行
               //以下写入图片
               FileInputStream fileInputStream = new FileInputStream(new File(fileUrl));
@@ -79,7 +79,7 @@ public class MobileTest2  {
               out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
               //这是第二行，文件名和对应服务器的
 
-              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"image2\"" + end);//这是第二行
+              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"你好.note\"" + end);//这是第二行
               out.writeBytes(end);//空一行
               //以下写入图片
               FileInputStream fileInputStream2 = new FileInputStream(new File(fileUrl2));
