@@ -152,7 +152,8 @@
 		a.biji_size AS "bijiSize"
 		FROM dm_yunbiji a
 		left join dm_user d on d.id = a.user_id
-		WHERE d.id = #{dmUser.id}
+		WHERE d.id = #{dmUserId}
+		LIMIT #{pageNo},#{pageSize}
 	</select>
 
 </mapper>

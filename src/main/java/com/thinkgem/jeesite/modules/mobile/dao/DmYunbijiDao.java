@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.mobile.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,5 +25,5 @@ public interface DmYunbijiDao extends CrudDao<DmYunbiji> {
 
     void updataYunBiJiName(DmYunbiji dmYunbiji);
 
-    List<DmYunbiji> getYunBiJiList(DmYunbiji dmYunbiji);
+    List<DmYunbiji> getYunBiJiList(@Param("dmUserId") String dmUserId, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 }

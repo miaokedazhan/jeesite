@@ -269,10 +269,8 @@ public class YunBiJiController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getAllYunBiJi")
-    public MobileResult getAllYunBiJi(DmUser dmUser) {
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setName(dmUser);
-        List<DmYunbiji> dmYunbijis = dmYunbijiService.getYunBiJiList(dmYunbiji);
+    public MobileResult getAllYunBiJi(DmUser dmUser, String pageNo, String pageSize) {
+        List<DmYunbiji> dmYunbijis = dmYunbijiService.getYunBiJiList(dmUser.getId(), Integer.valueOf(pageNo), Integer.valueOf(pageSize));
         try {
             return MobileResult.ok(MobileUtils.STATUS_1044, ConverUtils.yunbijiListToBeanList(dmYunbijis));
         } catch (Exception e) {

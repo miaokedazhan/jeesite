@@ -63,7 +63,7 @@ public class DmYunbijiService extends CrudService<DmYunbijiDao, DmYunbiji> {
         dmYunbijiDao.updataYunBiJiName(dmYunbiji);
     }
 
-    public List<DmYunbiji> getYunBiJiList(DmYunbiji dmYunbiji) {
-        return dmYunbijiDao.getYunBiJiList(dmYunbiji);
+    public List<DmYunbiji> getYunBiJiList(String dmUserId, int pageNo, int pageSize) {
+        return dmYunbijiDao.getYunBiJiList(dmUserId, pageNo, pageSize);
     }
 }

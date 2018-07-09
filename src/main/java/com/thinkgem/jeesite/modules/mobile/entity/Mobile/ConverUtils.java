@@ -22,6 +22,7 @@ public class ConverUtils {
             fileBean.setImageurl(dmYunbiji.getBijiImage());
             fileBean.setFilename(dmYunbiji.getBijiName());
             fileBean.setFilesize(dmYunbiji.getBijiSize());
+            fileBeanList.add(fileBean);
         }
         return fileBeanList;
     }
