@@ -183,6 +183,7 @@ public class YunBiJiController extends BaseController {
     public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
             String token = request.getHeader("token");
+            System.out.println(token);
             // 文件保存目录相对路径
             String basePath = "upload";
             // 文件的目录名
@@ -234,7 +235,7 @@ public class YunBiJiController extends BaseController {
                     String fileName = item.getName();
                     String newFileName;
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                    newFileName = df.format(new Date()) + "_" + fileName;
+                    newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000);
                     fileUrl = saveUrl + newFileName;
                     File uploadedFile = new File(savePath, newFileName);
                     item.write(uploadedFile);
@@ -253,6 +254,7 @@ public class YunBiJiController extends BaseController {
                         dmYunbiji.setBijiType(".note");
                         dmYunbijiService.saveYunBiJi(dmYunbiji);
                         fileBeanList.add(ConverUtils.yunbijiToBean(dmYunbiji));
+                        ConverUtils.dmYunbijiToNull(dmYunbiji);
                     }
                 }
             }

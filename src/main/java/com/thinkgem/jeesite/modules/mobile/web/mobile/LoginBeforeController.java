@@ -326,6 +326,9 @@ public class LoginBeforeController extends BaseController {
                     System.out.println(name + "=" + value);
                 } else {
                     String fileName = item.getName();
+/*                  System.out.println(new String(fileName.getBytes("ISO8859-1"),"UTF-8"));
+                    System.out.println(new String(fileName.getBytes(), "UTF-8"));
+                    System.out.println(new String(fileName.getBytes(), "gb2312"));*/
                     String newFileName;
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     newFileName = df.format(new Date()) + "_" + fileName;

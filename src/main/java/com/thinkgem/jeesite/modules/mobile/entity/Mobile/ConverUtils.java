@@ -35,4 +35,15 @@ public class ConverUtils {
         fileBean.setFilesize(dmYunbiji.getBijiSize());
         return fileBean;
     }
+
+    public static DmYunbiji dmYunbijiToNull(DmYunbiji dmYunbiji) {
+        dmYunbiji.setBijiImage(null);
+        dmYunbiji.setBiji(null);
+        dmYunbiji.setId(null);
+        dmYunbiji.setBijiName(null);
+        dmYunbiji.setBijiType(null);
+        dmYunbiji.setBijiSize(null);
+        return dmYunbiji;
+    }
+
 }

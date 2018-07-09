@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.Test;
+import org.springframework.util.Base64Utils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -78,8 +79,8 @@ public class MobileTest2  {
               out.writeBytes(end);
               out.writeBytes(prefix + boundary + end);//这是第一行  并回车换行
               //这是第二行，文件名和对应服务器的
-
-              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"你好.note\"" + end);//这是第二行
+              Base64Utils.decodeFromString("");
+              out.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + new String("你好".getBytes("gbk"), "iso-8859-1") + "\"" + end);//这是第二行
               out.writeBytes(end);//空一行
               //以下写入图片
               FileInputStream fileInputStream2 = new FileInputStream(new File(fileUrl2));
@@ -215,5 +216,10 @@ public class MobileTest2  {
 
     }
 
+    @Test
+    public void testZiFu() {
+        String s = "你好哦!";
+        System.out.println("源字符串：" + s);
 
+    }
 }
