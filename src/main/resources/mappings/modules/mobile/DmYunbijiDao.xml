@@ -149,10 +149,13 @@
 		SELECT
 		a.id AS "id",
 		a.biji_name AS "bijiName",
-		a.biji_size AS "bijiSize"
+		a.biji_size AS "bijiSize",
+		a.biji AS "biji",
+		a.biji_image AS "bijiImage"
 		FROM dm_yunbiji a
 		left join dm_user d on d.id = a.user_id
 		WHERE d.id = #{dmUserId}
+		ORDER BY a.create_date DESC
 		LIMIT #{pageNo},#{pageSize}
 	</select>
 

@@ -243,7 +243,7 @@ public class YunBiJiController extends BaseController {
                     if (fileName.indexOf(".note") == -1) {
                         dmYunbiji.setBijiImage(fileUrl);
                     } else {
-                        dmYunbiji.setBijiName(fileName);
+                        dmYunbiji.setBijiName(fileName.substring(0, fileName.length() - 5));
                         dmYunbiji.setCreateDate(new Date());
                         dmYunbiji.setName(dmUser);
                         dmYunbiji.setBiji(fileUrl);

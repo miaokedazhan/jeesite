@@ -218,8 +218,16 @@ public class MobileTest2  {
 
     @Test
     public void testZiFu() {
-        String s = "你好哦!";
-        System.out.println("源字符串：" + s);
+        String s = "你好.note";
+        String bytes = Base64Util.encode(s);
+
+        System.out.println(bytes);
+
+        System.out.println(Base64Util.decode(bytes));
+
+
+
+
 
     }
 }

@@ -15,8 +15,8 @@ public class ConverUtils {
 
     public static List<FileBean> yunbijiListToBeanList(List<DmYunbiji> dmYunbijis) {
         List<FileBean> fileBeanList = new ArrayList<FileBean>();
-        FileBean fileBean = new FileBean();
         for (DmYunbiji dmYunbiji : dmYunbijis) {
+            FileBean fileBean = new FileBean();
             fileBean.setId(dmYunbiji.getId());
             fileBean.setFileurl(dmYunbiji.getBiji());
             fileBean.setImageurl(dmYunbiji.getBijiImage());
