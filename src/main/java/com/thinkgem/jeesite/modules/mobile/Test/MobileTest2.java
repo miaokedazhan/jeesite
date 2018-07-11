@@ -192,12 +192,17 @@ public class MobileTest2  {
      */
     @Test
     public void testRedis() {
+
         List<String> list = new ArrayList<String>();
         list.add("1111");
         list.add("2222");
-
-
-        System.out.println(JSONArray.fromObject(list).toString());
+        String ss = JSONArray.fromObject(list).toString();
+        System.out.println(JSONArray.fromObject(list));
+        JSONArray jsonArray = JSONArray.fromObject(ss);
+        for (Object sss : jsonArray) {
+            System.out.println(sss);
+        }
+        System.out.println(jsonArray);
 
     }
 

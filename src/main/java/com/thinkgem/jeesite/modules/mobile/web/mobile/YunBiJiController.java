@@ -17,13 +17,13 @@ import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileResult;
 import com.thinkgem.jeesite.modules.mobile.utils.MobileUtils;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
+import net.sf.json.JSONArray;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -183,8 +183,6 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "uploadYunBiJiFromByte")
     public MobileResult uploadYunBiJi(HttpServletRequest request, DmUser dmUser) {
         try {
-            String token = request.getHeader("token");
-            System.out.println(token);
             // 文件保存目录相对路径
             String basePath = "upload";
             // 文件的目录名
@@ -231,7 +229,6 @@ public class YunBiJiController extends BaseController {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
-                    System.out.println(name + "=" + value);
                 } else {
                     String fileName = item.getName();
                     String newFileName;
@@ -255,7 +252,6 @@ public class YunBiJiController extends BaseController {
                         dmYunbiji.setName(dmUser);
                         dmYunbiji.setBiji(fileUrl);
                         String id = IdGen.getID12();
-                        System.out.println("id==" + id);
                         dmYunbiji.setId(id);
                         dmYunbiji.setBijiSize(String.valueOf(item.getSize()));
                         dmYunbiji.setBijiType(".note");
@@ -276,7 +272,9 @@ public class YunBiJiController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getAllYunBiJi")
-    public MobileResult getAllYunBiJi(DmUser dmUser, String pageNo, String pageSize) {
+    public MobileResult getAllYunBiJi(HttpServletRequest request, DmUser dmUser, String pageNo, String pageSize) {
+        String token = request.getHeader("token");
+        System.out.println(token);
         List<DmYunbiji> dmYunbijis = null;
         if ("-1".equals(pageSize)) {
             dmYunbijis = dmYunbijiService.getAllYunBiJiList(dmUser.getId());
@@ -295,12 +293,16 @@ public class YunBiJiController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "deleteYunBiJi")
-    public MobileResult deleteYunBiJi(HttpServletRequest request, @RequestBody List<String> ids) {
+    public MobileResult deleteYunBiJi(HttpServletRequest request, String ids) {
         try {
-            DmYunbiji dmYunbiji = new DmYunbiji();
-            for (String id : ids) {
-                dmYunbiji.setId(id);
-                dmYunbiji = dmYunbijiService.get(id);
+
+            ids = ids.replaceAll("&quot;", "");
+
+            JSONArray jsonArray = JSONArray.fromObject(ids);
+            for (Object id : jsonArray) {
+                DmYunbiji dmYunbiji = new DmYunbiji();
+                dmYunbiji.setId(id.toString());
+                dmYunbiji = dmYunbijiService.get(id.toString());
                 if (dmYunbiji != null) {
                     dmYunbijiService.delete(dmYunbiji);
                     new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBijiImage()).delete();

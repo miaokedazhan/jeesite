@@ -323,12 +323,8 @@ public class LoginBeforeController extends BaseController {
                 if (item.isFormField()) {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
-                    System.out.println(name + "=" + value);
                 } else {
                     String fileName = item.getName();
-/*                  System.out.println(new String(fileName.getBytes("ISO8859-1"),"UTF-8"));
-                    System.out.println(new String(fileName.getBytes(), "UTF-8"));
-                    System.out.println(new String(fileName.getBytes(), "gb2312"));*/
                     String newFileName;
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     newFileName = df.format(new Date()) + "_" + fileName;
@@ -344,7 +340,6 @@ public class LoginBeforeController extends BaseController {
                         dmYunbiji.setName(dmUser);
                         dmYunbiji.setBiji(fileUrl);
                         String id = IdGen.getID12();
-                        System.out.println("id==" + id);
                         dmYunbiji.setId(id);
                         dmYunbiji.setBijiSize(String.valueOf(item.getSize()));
                         dmYunbiji.setBijiType(".note");
