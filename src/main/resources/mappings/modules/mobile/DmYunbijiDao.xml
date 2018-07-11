@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thinkgem.jeesite.modules.mobile.dao.DmYunbijiDao">
 
-    <sql id="dmYunbijiColumns">
+	<sql id="dmYunbijiColumns">
 		a.id AS "id",
 		d.phone_number AS "dmUser.phoneNumber",
 		d.nickname AS "dmUser.nickname",
@@ -157,6 +157,19 @@
 		WHERE d.id = #{dmUserId}
 		ORDER BY a.create_date DESC
 		LIMIT #{pageNo},#{pageSize}
+	</select>
+
+	<select id="getAllYunBiJiList" resultType="DmYunbiji">
+		SELECT
+		a.id AS "id",
+		a.biji_name AS "bijiName",
+		a.biji_size AS "bijiSize",
+		a.biji AS "biji",
+		a.biji_image AS "bijiImage"
+		FROM dm_yunbiji a
+		left join dm_user d on d.id = a.user_id
+		WHERE d.id = #{dmUserId}
+		ORDER BY a.create_date DESC
 	</select>
 
 </mapper>

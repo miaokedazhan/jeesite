@@ -1,7 +1,6 @@
 package com.thinkgem.jeesite.modules.mobile.Test;
 
 
-import com.thinkgem.jeesite.modules.mobile.entity.Mobile.Data;
 import net.sf.json.JSONArray;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -193,26 +192,12 @@ public class MobileTest2  {
      */
     @Test
     public void testRedis() {
-        Data data = new Data();
-        data.setState(1);
-        data.setX(1);
-        data.setY(1);
-        data.setColor(1);
-        data.setIntype(1);
-        data.setPenwidth(1);
-        Data data2 = new Data();
-        data2.setState(12);
-        data2.setX(12);
-        data2.setY(12);
-        data2.setColor(12);
-        data2.setIntype(12);
-        data2.setPenwidth(12);
-        List<List<Data>> listList = new ArrayList<List<Data>>();
-        List<Data> list = new ArrayList<Data>();
-        list.add(data);
-        list.add(data2);
-        listList.add(list);
-        System.out.println(JSONArray.fromObject(listList).toString());
+        List<String> list = new ArrayList<String>();
+        list.add("1111");
+        list.add("2222");
+
+
+        System.out.println(JSONArray.fromObject(list).toString());
 
     }
 

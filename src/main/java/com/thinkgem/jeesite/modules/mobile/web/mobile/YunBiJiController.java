@@ -23,6 +23,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -235,14 +236,20 @@ public class YunBiJiController extends BaseController {
                     String fileName = item.getName();
                     String newFileName;
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                    newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000);
-                    fileUrl = saveUrl + newFileName;
-                    File uploadedFile = new File(savePath, newFileName);
-                    item.write(uploadedFile);
-                    dmYunbiji.setBiji(fileUrl);
+                    File uploadedFile = null;
                     if (fileName.indexOf(".note") == -1) {
+                        newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000);
+                        fileUrl = saveUrl + newFileName;
+                        uploadedFile = new File(savePath, newFileName);
+                        item.write(uploadedFile);
+                        dmYunbiji.setBiji(fileUrl);
                         dmYunbiji.setBijiImage(fileUrl);
                     } else {
+                        newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000) + ".note";
+                        fileUrl = saveUrl + newFileName;
+                        uploadedFile = new File(savePath, newFileName);
+                        item.write(uploadedFile);
+                        dmYunbiji.setBiji(fileUrl);
                         dmYunbiji.setBijiName(fileName.substring(0, fileName.length() - 5));
                         dmYunbiji.setCreateDate(new Date());
                         dmYunbiji.setName(dmUser);
@@ -270,7 +277,12 @@ public class YunBiJiController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "getAllYunBiJi")
     public MobileResult getAllYunBiJi(DmUser dmUser, String pageNo, String pageSize) {
-        List<DmYunbiji> dmYunbijis = dmYunbijiService.getYunBiJiList(dmUser.getId(), Integer.valueOf(pageNo), Integer.valueOf(pageSize));
+        List<DmYunbiji> dmYunbijis = null;
+        if ("-1".equals(pageSize)) {
+            dmYunbijis = dmYunbijiService.getAllYunBiJiList(dmUser.getId());
+        } else {
+            dmYunbijis = dmYunbijiService.getYunBiJiList(dmUser.getId(), Integer.valueOf(pageNo), Integer.valueOf(pageSize));
+        }
         try {
             return MobileResult.ok(MobileUtils.STATUS_1044, ConverUtils.yunbijiListToBeanList(dmYunbijis));
         } catch (Exception e) {
@@ -283,12 +295,24 @@ public class YunBiJiController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "deleteYunBiJi")
-    public MobileResult deleteYunBiJi(String id) {
-        DmYunbiji dmYunbiji = new DmYunbiji();
-        dmYunbiji.setId(id);
-        dmYunbijiService.delete(dmYunbiji);
-        return MobileResult.ok(MobileUtils.STATUS_1043, "");
+    public MobileResult deleteYunBiJi(HttpServletRequest request, @RequestBody List<String> ids) {
+        try {
+            DmYunbiji dmYunbiji = new DmYunbiji();
+            for (String id : ids) {
+                dmYunbiji.setId(id);
+                dmYunbiji = dmYunbijiService.get(id);
+                if (dmYunbiji != null) {
+                    dmYunbijiService.delete(dmYunbiji);
+                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBijiImage()).delete();
+                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBiji()).delete();
+                }
+            }
+            ///**/new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBijiImage()).delete();
+            return MobileResult.ok(MobileUtils.STATUS_1043, "");
 
+        } catch (Exception e) {
+            return MobileResult.exception("error " + e.toString());
+        }
     }
 
 

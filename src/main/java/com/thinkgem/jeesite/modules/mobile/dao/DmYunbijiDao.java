@@ -26,4 +26,6 @@ public interface DmYunbijiDao extends CrudDao<DmYunbiji> {
     void updataYunBiJiName(DmYunbiji dmYunbiji);
 
     List<DmYunbiji> getYunBiJiList(@Param("dmUserId") String dmUserId, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+
+    List<DmYunbiji> getAllYunBiJiList(@Param("dmUserId") String dmUserId);
 }
