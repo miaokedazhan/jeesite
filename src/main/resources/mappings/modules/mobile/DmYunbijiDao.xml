@@ -156,7 +156,7 @@
 		left join dm_user d on d.id = a.user_id
 		WHERE d.id = #{dmUserId}
 		ORDER BY a.create_date DESC
-		LIMIT #{pageNo},#{pageSize}
+		LIMIT  ${pageNo*pageSize},#{pageSize}
 	</select>
 
 	<select id="getAllYunBiJiList" resultType="DmYunbiji">
