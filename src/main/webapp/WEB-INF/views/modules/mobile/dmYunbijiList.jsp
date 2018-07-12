@@ -4,12 +4,21 @@
 <head>
     <title>云笔记数据管理</title>
     <meta name="decorator" content="default"/>
+    <style>
+        .max {
+            width: 100%;
+            height: auto;
+        }
+
+        .min {
+            width: 100px;
+            height: auto;
+        }
+    </style>
     <script type="text/javascript">
 
         $(document).ready(function () {
-
         });
-
         function page(n, s) {
             $("#pageNo").val(n);
             $("#pageSize").val(s);
@@ -62,7 +71,7 @@
                     ${dmYunbiji.bijiSize}
             </td>
             <td>
-                <img src="http://192.168.0.58:8080/loginBefore/getYunBiJi?id=${dmYunbiji.id}"
+                <img src="${dmYunbiji.bijiImage}"
                      style="width: 50px;height: 50px;padding: 5px">
             </td>
             <td>

@@ -5,6 +5,7 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * 用户信息Controller
@@ -44,8 +47,11 @@ public class DmUserController extends BaseController {
 	
 	@RequiresPermissions("mobile:dmUser:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(DmUser dmUser, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<DmUser> page = dmUserService.findPage(new Page<DmUser>(request, response), dmUser); 
+	public String list(DmUser dmUser, HttpServletRequest request, HttpServletResponse response, Model model) throws UnsupportedEncodingException {
+		Page<DmUser> page = dmUserService.findPage(new Page<DmUser>(request, response), dmUser);
+		List<DmUser> dmUserList = page.getList();
+		dmUserList = ConverUtils.dmUserEmoji(dmUserList);
+		page.setList(dmUserList);
 		model.addAttribute("page", page);
 		return "modules/mobile/dmUserList";
 	}

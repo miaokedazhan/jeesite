@@ -1,7 +1,10 @@
 package com.thinkgem.jeesite.modules.mobile.entity.Mobile;
 
+import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
+import com.thinkgem.jeesite.modules.mobile.utils.EmojiUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,25 @@ public class ConverUtils {
         return fileBean;
     }
 
+    public static List<DmYunbiji> dmYunbijiEmoji(List<DmYunbiji> dmYunbijis) throws UnsupportedEncodingException {
+        List<DmYunbiji> dmYunbijiList = new ArrayList<DmYunbiji>();
+        for (DmYunbiji dmYunbiji : dmYunbijis) {
+            dmYunbiji.getName().setNickname(EmojiUtil.emojiRecovery2(dmYunbiji.getName().getNickname()));
+            dmYunbijiList.add(dmYunbiji);
+        }
+        return dmYunbijiList;
+    }
+
+    public static List<DmUser> dmUserEmoji(List<DmUser> dmYunbijis) throws UnsupportedEncodingException {
+        List<DmUser> dmUserList = new ArrayList<DmUser>();
+        for (DmUser dmUser : dmYunbijis) {
+            dmUser.setNickname(EmojiUtil.emojiRecovery2(dmUser.getNickname()));
+            dmUserList.add(dmUser);
+        }
+        return dmUserList;
+    }
+
+
     public static DmYunbiji dmYunbijiToNull(DmYunbiji dmYunbiji) {
         dmYunbiji.setBijiImage(null);
         dmYunbiji.setBiji(null);
@@ -46,5 +68,6 @@ public class ConverUtils {
         dmYunbiji.setBijiSize(null);
         return dmYunbiji;
     }
+
 
 }

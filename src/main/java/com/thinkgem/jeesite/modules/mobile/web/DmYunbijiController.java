@@ -8,6 +8,7 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmYunbiji;
+import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
 import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * 云笔记数据Controller
@@ -48,8 +51,11 @@ public class DmYunbijiController extends BaseController {
 
     @RequiresPermissions("mobile:dmYunbiji:view")
     @RequestMapping(value = {"list", ""})
-    public String list(DmYunbiji dmYunbiji, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String list(DmYunbiji dmYunbiji, HttpServletRequest request, HttpServletResponse response, Model model) throws UnsupportedEncodingException {
         Page<DmYunbiji> page = dmYunbijiService.findPage(new Page<DmYunbiji>(request, response), dmYunbiji);
+        List<DmYunbiji> dmYunbijiList = page.getList();
+        dmYunbijiList = ConverUtils.dmYunbijiEmoji(dmYunbijiList);
+        page.setList(dmYunbijiList);
         model.addAttribute("page", page);
         return "modules/mobile/dmYunbijiList";
     }

@@ -295,18 +295,17 @@ public class YunBiJiController extends BaseController {
     @RequestMapping(value = "deleteYunBiJi")
     public MobileResult deleteYunBiJi(HttpServletRequest request, String ids) {
         try {
-
             ids = ids.replaceAll("&quot;", "");
-
             JSONArray jsonArray = JSONArray.fromObject(ids);
             for (Object id : jsonArray) {
                 DmYunbiji dmYunbiji = new DmYunbiji();
+                DmYunbiji dmYunbiji2 = null;
                 dmYunbiji.setId(id.toString());
-                dmYunbiji = dmYunbijiService.get(id.toString());
-                if (dmYunbiji != null) {
+                dmYunbiji2 = dmYunbijiService.get(id.toString());
+                if (dmYunbiji2 != null) {
                     dmYunbijiService.delete(dmYunbiji);
-                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBijiImage()).delete();
-                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBiji()).delete();
+                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji2.getBijiImage()).delete();
+                    new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji2.getBiji()).delete();
                 }
             }
             ///**/new File(request.getSession().getServletContext().getRealPath("/") + dmYunbiji.getBijiImage()).delete();
