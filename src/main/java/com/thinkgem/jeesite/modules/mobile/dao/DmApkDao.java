@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
 
+import java.util.List;
+
 /**
  * 移动版本管理DAO接口
  * @author 刘智科
@@ -14,5 +16,10 @@ import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
  */
 @MyBatisDao
 public interface DmApkDao extends CrudDao<DmApk> {
+
+    DmApk getNewApk();
+
+
+    List<DmApk> getApkList();
 	
 }

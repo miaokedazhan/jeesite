@@ -3,15 +3,15 @@
  */
 package com.thinkgem.jeesite.modules.mobile.service;
 
-import java.util.List;
-
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.service.CrudService;
+import com.thinkgem.jeesite.modules.mobile.dao.DmApkDao;
+import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.service.CrudService;
-import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
-import com.thinkgem.jeesite.modules.mobile.dao.DmApkDao;
+import java.util.List;
 
 /**
  * 移动版本管理Service
@@ -21,6 +21,16 @@ import com.thinkgem.jeesite.modules.mobile.dao.DmApkDao;
 @Service
 @Transactional(readOnly = true)
 public class DmApkService extends CrudService<DmApkDao, DmApk> {
+	@Autowired
+	private DmApkDao dmApkDao;
+
+	public DmApk getNewApk() {
+		return dmApkDao.getNewApk();
+	}
+
+	public List<DmApk> getApkList() {
+		return dmApkDao.getApkList();
+	}
 
 	public DmApk get(String id) {
 		return super.get(id);
