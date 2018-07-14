@@ -2,6 +2,7 @@ package com.thinkgem.jeesite.modules.mobile.Test;
 
 
 import net.sf.json.JSONArray;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -207,14 +208,10 @@ public class MobileTest2  {
     }
 
     @Test
-    public void testZiFu() {
-        String s = "你好.note";
-        String bytes = Base64Util.encode(s);
+    public void testZiFu() throws UnsupportedEncodingException {
 
-        System.out.println(bytes);
-
-        System.out.println(Base64Util.decode(bytes));
-
+        String encodeStr = DigestUtils.md5Hex("12223344" + "abc");
+        System.out.println("MD5加密后的字符串为:encodeStr=" + encodeStr);
 
 
 
