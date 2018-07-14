@@ -105,6 +105,11 @@
 	</update>
 
 
+	<update id="deleteYunBiJiByUser">
+		DELETE FROM dm_yunbiji
+		WHERE user_id = #{dmUserId}
+	</update>
+
     <insert id="saveYunBiJi">
 		INSERT INTO dm_yunbiji(
 			id,

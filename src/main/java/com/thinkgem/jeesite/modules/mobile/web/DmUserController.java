@@ -7,6 +7,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.mobile.entity.DmUser;
 import com.thinkgem.jeesite.modules.mobile.entity.Mobile.ConverUtils;
 import com.thinkgem.jeesite.modules.mobile.service.DmUserService;
+import com.thinkgem.jeesite.modules.mobile.service.DmYunbijiService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class DmUserController extends BaseController {
 
 	@Autowired
 	private DmUserService dmUserService;
+	@Autowired
+	private DmYunbijiService dmYunbijiService;
 	
 	@ModelAttribute
 	public DmUser get(@RequestParam(required=false) String id) {
@@ -61,6 +64,7 @@ public class DmUserController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(DmUser dmUser, RedirectAttributes redirectAttributes) {
 		dmUserService.delete(dmUser);
+		dmYunbijiService.deleteYunBiJiByUser(dmUser.getId());
 		addMessage(redirectAttributes, "删除用户成功");
 		return "redirect:"+Global.getAdminPath()+"/mobile/dmUser/?repage";
 	}

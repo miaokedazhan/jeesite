@@ -21,6 +21,8 @@ public interface DmYunbijiDao extends CrudDao<DmYunbiji> {
 
     void saveYunBiJi(DmYunbiji dmYunbiji);
 
+    void deleteYunBiJiByUser(@Param("dmUserId") String dmUserId);
+
     void updataYunBiJi(DmYunbiji dmYunbiji);
 
     void updataYunBiJiName(DmYunbiji dmYunbiji);

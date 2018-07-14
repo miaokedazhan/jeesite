@@ -67,6 +67,11 @@ public class DmYunbijiService extends CrudService<DmYunbijiDao, DmYunbiji> {
         return dmYunbijiDao.getYunBiJiList(dmUserId, pageNo, pageSize);
     }
 
+    @Transactional(readOnly = false)
+    public void deleteYunBiJiByUser(String dmUserId) {
+        dmYunbijiDao.deleteYunBiJiByUser(dmUserId);
+    }
+
     public List<DmYunbiji> getAllYunBiJiList(String dmUserId) {
         return dmYunbijiDao.getAllYunBiJiList(dmUserId);
     }
