@@ -58,7 +58,7 @@ public class VersionManager {
                 map.put("url", dmApk.getUrl());
                 map.put("version", dmApk.getVersion());
             }
-        } else {
+        } else if (("Ios").equals(os)) {
             dmApk = dmApkService.getNewApkForIos();
             if (dmApk.getVersion().equals(version)) {
                 map.put("isNew", true);
@@ -69,6 +69,10 @@ public class VersionManager {
                 map.put("url", dmApk.getUrl());
                 map.put("version", dmApk.getVersion());
             }
+        } else {
+            map.put("isNew", true);
+            map.put("url", "");
+            map.put("version", version);
         }
         return MobileResult.ok("验证版本成功", map);
     }
