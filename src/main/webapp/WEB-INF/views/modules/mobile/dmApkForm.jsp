@@ -8,12 +8,6 @@
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
-                rules: {
-                    version: {remote: "${ctx}/mobile/dmApk/checkVersion?oldVersion=" + encodeURIComponent('${dmApk.version}')}
-                },
-                messages: {
-                    version: {remote: "该版本已存在"}
-                },
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -56,7 +50,8 @@
 		<div class="control-group">
 			<label class="control-label">平台：</label>
 			<div class="controls">
-                <form:select path="os" class="input-medium">
+                <form:select id="os" name="os"
+                             path="os" class="input-medium">
                     <form:options items="${fns:getDictList('MOBILE_SERSION')}" itemLabel="label" itemValue="value"
                                   htmlEscape="false"/>
                 </form:select>
@@ -66,7 +61,6 @@
 		<div class="control-group">
 			<label class="control-label">版本：</label>
 			<div class="controls">
-				<input id="oldVersion" name="oldVersion" type="hidden" value="${dmApk.version}">
 				<form:input path="version" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
@@ -75,7 +69,7 @@
 			<label class="control-label">文件：</label>
 			<div class="controls">
 				<form:hidden id="url" path="url" htmlEscape="false" maxlength="255" class="input-xlarge"/>
-				<sys:ckfinder input="url" type="files" uploadPath="/mobile/dmApk" selectMultiple="true"/>
+                <sys:ckfinder input="url" type="files" uploadPath="/mobile/dmApk" selectMultiple="false"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
