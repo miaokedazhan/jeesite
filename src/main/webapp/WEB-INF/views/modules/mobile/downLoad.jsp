@@ -34,7 +34,8 @@
                 </div>
                 <div>
                     <div style="width: 50%; height: 100px;float:left;margin-top:20px;" align="center"><a id="Android"
-                                                                                                         href="${dmApk.url}">安卓下载</a>
+                                                                                                         href="${dmApk.url}"
+                                                                                                         url="${dmApk.url}">安卓下载</a>
                     </div>
                     <div style="width: 50%; height: 100px;float:right;margin-top:20px;" align="center"><a
                             href="https://itunes.apple.com/cn/app/%E6%99%BA%E8%83%BD%E4%BA%91%E7%AC%94%E8%AE%B0%E6%9C%AC/id1318529507?mt=8">苹果下载</a>
