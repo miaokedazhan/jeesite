@@ -19,7 +19,7 @@
 	<sql id="dmApkJoins">
 	</sql>
 
-	<select id="getNewApk" resultType="DmApk">
+	<select id="getNewApkForAndroid" resultType="DmApk">
 		SELECT
 		a.packagename AS "packagename",
 		a.name AS "name",
@@ -34,6 +34,25 @@
 		FROM dm_apk a
 		<include refid="dmApkJoins"/>
 		WHERE a.os = 'Android'
+		order by a.create_date desc
+		limit 0,1
+	</select>
+
+	<select id="getNewApkForIos" resultType="DmApk">
+		SELECT
+		a.packagename AS "packagename",
+		a.name AS "name",
+		a.os AS "os",
+		a.version AS "version",
+		substring(a.url,2) AS "url",
+		a.message AS "message",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate"
+		FROM dm_apk a
+		<include refid="dmApkJoins"/>
+		WHERE a.os = 'Ios'
 		order by a.create_date desc
 		limit 0,1
 	</select>
@@ -62,6 +81,14 @@
 		FROM dm_apk a
 		<include refid="dmApkJoins"/>
 		WHERE a.id = #{id}
+	</select>
+
+	<select id="checkVersion" resultType="DmApk">
+		SELECT
+		<include refid="dmApkColumns"/>
+		FROM dm_apk a
+		<include refid="dmApkJoins"/>
+		WHERE a.version = #{version}
 	</select>
 	
 	<select id="findList" resultType="DmApk">

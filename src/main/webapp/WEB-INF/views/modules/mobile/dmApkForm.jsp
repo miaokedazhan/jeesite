@@ -8,6 +8,12 @@
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
+                rules: {
+                    version: {remote: "${ctx}/mobile/dmApk/checkVersion?oldVersion=" + encodeURIComponent('${dmApk.version}')}
+                },
+                messages: {
+                    version: {remote: "该版本已存在"}
+                },
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -60,6 +66,7 @@
 		<div class="control-group">
 			<label class="control-label">版本：</label>
 			<div class="controls">
+				<input id="oldVersion" name="oldVersion" type="hidden" value="${dmApk.version}">
 				<form:input path="version" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>

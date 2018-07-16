@@ -24,12 +24,20 @@ public class DmApkService extends CrudService<DmApkDao, DmApk> {
 	@Autowired
 	private DmApkDao dmApkDao;
 
-	public DmApk getNewApk() {
-		return dmApkDao.getNewApk();
+	public DmApk getNewApkForAndroid() {
+		return dmApkDao.getNewApkForAndroid();
+	}
+
+	public DmApk getNewApkForIos() {
+		return dmApkDao.getNewApkForIos();
 	}
 
 	public List<DmApk> getApkList() {
 		return dmApkDao.getApkList();
+	}
+
+	public DmApk checkVersion(String version) {
+		return dmApkDao.checkVersion(version);
 	}
 
 	public DmApk get(String id) {

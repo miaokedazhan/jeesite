@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +78,22 @@ public class DmApkController extends BaseController {
 		dmApkService.delete(dmApk);
 		addMessage(redirectAttributes, "删除版本成功");
 		return "redirect:"+Global.getAdminPath()+"/mobile/dmApk/?repage";
+	}
+
+	/**
+	 * 验证登录名是否有效
+	 *
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "checkVersion")
+	public String checkVersion(String oldVersion, String version, String os) {
+		if (version != null && version.equals(oldVersion)) {
+			return "true";
+		} else if (version != null && dmApkService.checkVersion(version) == null) {
+			return "true";
+		}
+		return "false";
 	}
 
 }

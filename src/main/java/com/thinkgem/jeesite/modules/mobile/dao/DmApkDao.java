@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.mobile.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.mobile.entity.DmApk;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,9 +18,12 @@ import java.util.List;
 @MyBatisDao
 public interface DmApkDao extends CrudDao<DmApk> {
 
-    DmApk getNewApk();
+    DmApk getNewApkForAndroid();
 
+    DmApk getNewApkForIos();
 
     List<DmApk> getApkList();
+
+    DmApk checkVersion(@Param("version") String version);
 	
 }
