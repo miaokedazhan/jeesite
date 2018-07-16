@@ -30,25 +30,28 @@ public class VersionManager {
 
     @RequestMapping(value = {"getApk"})
     public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
-        DmApk dmApk = dmApkService.getNewApkForAndroid();
+        DmApk dmApk = dmApkService.getNewApkForAndroid("com.wlzn.nazapad");
         model.addAttribute("dmApk", dmApk);
         return "modules/mobile/downLoad";
     }
 
     @RequestMapping(value = {"getApkList"})
     public String getApkList(HttpServletRequest request, HttpServletResponse response, Model model) {
-        List<DmApk> dmApks = dmApkService.getApkList();
+        List<DmApk> dmApks = dmApkService.getApkList("com.wlzn.nazapad");
         model.addAttribute("dmApks", dmApks);
         return "modules/mobile/downLoadList";
     }
 
     @ResponseBody
     @RequestMapping(value = {"validateVersion"})
-    public MobileResult validateVersion(String os, String version) {
+    public MobileResult validateVersion(String os, String version, String packagename) {
         DmApk dmApk = null;
         Map<String, Object> map = new HashMap<String, Object>();
         if (("Android").equals(os)) {
-            dmApk = dmApkService.getNewApkForAndroid();
+            dmApk = dmApkService.getNewApkForAndroid(packagename);
+            if (dmApk == null) {
+                return MobileResult.ok("版本不存在", "");
+            }
             if (dmApk.getVersion().equals(version)) {
                 map.put("isNew", true);
                 map.put("url", "is new");
@@ -59,7 +62,10 @@ public class VersionManager {
                 map.put("version", dmApk.getVersion());
             }
         } else if (("Ios").equals(os)) {
-            dmApk = dmApkService.getNewApkForIos();
+            dmApk = dmApkService.getNewApkForIos(packagename);
+            if (dmApk == null) {
+                return MobileResult.ok("版本不存在", "");
+            }
             if (dmApk.getVersion().equals(version)) {
                 map.put("isNew", true);
                 map.put("url", "is new");

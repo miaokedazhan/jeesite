@@ -18,11 +18,11 @@ import java.util.List;
 @MyBatisDao
 public interface DmApkDao extends CrudDao<DmApk> {
 
-    DmApk getNewApkForAndroid();
+    DmApk getNewApkForAndroid(@Param("packagename") String packagename);
 
-    DmApk getNewApkForIos();
+    DmApk getNewApkForIos(@Param("packagename") String packagename);
 
-    List<DmApk> getApkList();
+    List<DmApk> getApkList(@Param("packagename") String packagename);
 
     DmApk checkVersion(@Param("version") String version);
 	
